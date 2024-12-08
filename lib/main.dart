@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'screens/counter_screen.dart';
+import 'features/editor/editor_main_page.dart';
 
 void main() {
   runApp(
@@ -21,7 +21,7 @@ class IslandGeneratorApp extends StatelessWidget {
         colorScheme: ColorScheme.fromSeed(seedColor: Colors.blue),
         useMaterial3: true,
       ),
-      home: const CounterScreen(),
+      home: const EditorMainPage(),
     );
   }
 }
