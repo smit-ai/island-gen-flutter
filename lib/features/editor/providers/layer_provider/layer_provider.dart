@@ -18,10 +18,9 @@ class LayerController extends _$LayerController {
       }
     });
 
-    final resolution = ref.read(globalSettingsProvider).resolution;
     final layer = Layer(id: layerId);
-    final heightmap = HeightmapGenerator.generateHeightmap(layer, resolution);
-    return layer.copyWith(cachedData: heightmap);
+    Future(() => generateHeightmap());
+    return layer;
   }
 
   void destroy() {
@@ -29,15 +28,15 @@ class LayerController extends _$LayerController {
     ref.invalidateSelf();
   }
 
-  void generateHeightmap() {
+  void generateHeightmap() async {
     final resolution = ref.read(globalSettingsProvider).resolution;
-    final heightmap = HeightmapGenerator.generateHeightmap(state, resolution);
+    final heightmap = await HeightmapGenerator.generateHeightmap(state, resolution);
     state = state.copyWith(cachedData: heightmap);
   }
 
   void _debouncedGenerateHeightmap() {
     _debounceTimer?.cancel();
-    _debounceTimer = Timer(const Duration(milliseconds: 100), generateHeightmap);
+    _debounceTimer = Timer(const Duration(milliseconds: 10), generateHeightmap);
   }
 
   void updateLayerName(String name) {
