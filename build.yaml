@@ -4,16 +4,14 @@ targets:
       freezed:
         generate_for:
           include:
-            - lib/models/**.dart
-            - lib/state/**.dart
+            - lib/**.dart
       json_serializable:
         options:
           explicit_to_json: true
         generate_for:
           include:
-            - lib/models/**.dart
+            - lib/**.dart
       riverpod_generator:
         generate_for:
           include:
-            - lib/state/**.dart
-            - lib/providers/**.dart 
+            - lib/**.dart 

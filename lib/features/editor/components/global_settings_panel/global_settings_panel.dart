@@ -1,11 +1,15 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import '../../providers/global_settings_provider/global_settings_state_provider.dart';
 
 class GlobalSettingsPanel extends ConsumerWidget {
   const GlobalSettingsPanel({super.key});
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
+    final state = ref.watch(globalSettingsProvider);
+    final controller = ref.read(globalSettingsProvider.notifier);
+
     return Container(
       padding: const EdgeInsets.all(16),
       decoration: BoxDecoration(
@@ -27,74 +31,47 @@ class GlobalSettingsPanel extends ConsumerWidget {
           ),
           const SizedBox(height: 16),
           // Resolution input
-          _buildResolutionInput(),
-          const SizedBox(height: 16),
-          // Seed input
-          _buildSeedInput(),
-          const SizedBox(height: 16),
-          // Generate button
-          _buildGenerateButton(),
+          Column(
+            crossAxisAlignment: CrossAxisAlignment.start,
+            children: [
+              const Text('Resolution'),
+              const SizedBox(height: 8),
+              Row(
+                children: [
+                  Expanded(
+                    child: Container(
+                      padding: const EdgeInsets.symmetric(horizontal: 12),
+                      decoration: BoxDecoration(
+                        border: Border.all(color: Colors.grey),
+                        borderRadius: BorderRadius.circular(4),
+                      ),
+                      child: DropdownButton<Size>(
+                        value: state.presets.contains(state.resolution) ? state.resolution : null,
+                        hint: const Text('Select Resolution'),
+                        isExpanded: true,
+                        underline: Container(), // Remove the default underline
+                        items: state.presets.map((preset) {
+                          return DropdownMenuItem(
+                            value: preset,
+                            child: Text(
+                              '${preset.width.toInt()}x${preset.height.toInt()}',
+                              style: const TextStyle(fontSize: 14),
+                            ),
+                          );
+                        }).toList(),
+                        onChanged: (Size? newValue) {
+                          if (newValue != null) {
+                            controller.updateResolution(newValue);
+                          }
+                        },
+                      ),
+                    ),
+                  ),
+                ],
+              ),
+            ],
+          ),
         ],
-      ),
-    );
-  }
-
-  Widget _buildResolutionInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Resolution'),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            hintText: '1024x1024',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildSeedInput() {
-    return Column(
-      crossAxisAlignment: CrossAxisAlignment.start,
-      children: [
-        const Text('Seed'),
-        const SizedBox(height: 8),
-        TextField(
-          decoration: InputDecoration(
-            border: OutlineInputBorder(
-              borderRadius: BorderRadius.circular(8),
-            ),
-            contentPadding: const EdgeInsets.symmetric(
-              horizontal: 12,
-              vertical: 8,
-            ),
-            hintText: 'Enter seed value',
-          ),
-        ),
-      ],
-    );
-  }
-
-  Widget _buildGenerateButton() {
-    return SizedBox(
-      width: double.infinity,
-      child: ElevatedButton(
-        onPressed: () {},
-        style: ElevatedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: const Text('Generate'),
       ),
     );
   }
