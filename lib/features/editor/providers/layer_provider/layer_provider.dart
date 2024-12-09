@@ -12,6 +12,8 @@ class LayerController extends _$LayerController {
     ref.invalidateSelf();
   }
 
+  void generateHeightmap() {}
+
   void updateLayerName(String name) {
     state = state.copyWith(name: name);
   }

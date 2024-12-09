@@ -1,5 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
+import 'package:island_gen_flutter/features/editor/components/main_display_area/main_area_toolbar.dart';
 
 class MainDisplayArea extends ConsumerWidget {
   const MainDisplayArea({super.key});
@@ -30,44 +31,7 @@ class MainDisplayArea extends ConsumerWidget {
                 ),
               ),
             ),
-
-            // Toolbar overlay
-            Positioned(
-              top: 16,
-              right: 16,
-              child: Card(
-                child: Padding(
-                  padding: const EdgeInsets.all(8.0),
-                  child: Row(
-                    children: [
-                      IconButton(
-                        icon: const Icon(Icons.zoom_in),
-                        onPressed: () {},
-                        tooltip: 'Zoom In',
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.zoom_out),
-                        onPressed: () {},
-                        tooltip: 'Zoom Out',
-                      ),
-                      IconButton(
-                        icon: const Icon(Icons.fit_screen),
-                        onPressed: () {},
-                        tooltip: 'Fit to Screen',
-                      ),
-                      const SizedBox(width: 8),
-                      const VerticalDivider(),
-                      const SizedBox(width: 8),
-                      IconButton(
-                        icon: const Icon(Icons.save),
-                        onPressed: () {},
-                        tooltip: 'Export',
-                      ),
-                    ],
-                  ),
-                ),
-              ),
-            ),
+            const MainAreaToolbar(),
           ],
         ),
       ),
