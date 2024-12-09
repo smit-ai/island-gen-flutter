@@ -8,9 +8,11 @@ part 'package:island_gen_flutter/generated/features/editor/providers/global_sett
 @freezed
 class GlobalSettingsState with _$GlobalSettingsState {
   const factory GlobalSettingsState({
-    @Default(Size(512, 512)) Size resolution,
+    @Default(Size(64, 64)) Size resolution,
     @Default(0) int seed,
     @Default([
+      Size(64, 64),
+      Size(128, 128),
       Size(256, 256),
       Size(512, 512),
       Size(1024, 1024),

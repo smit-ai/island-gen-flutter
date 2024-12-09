@@ -2,13 +2,13 @@ import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'package:island_gen_flutter/generated/models/layer.freezed.dart';
 
-enum NoiseType {
+enum LayerNoiseType {
   perlin,
   simplex,
   voronoi,
 }
 
-enum BlendMode {
+enum LayerBlendMode {
   min,
   max,
   add,
@@ -16,11 +16,11 @@ enum BlendMode {
 }
 
 @freezed
-class NoiseParams with _$NoiseParams {
-  const factory NoiseParams({
-    @Default(NoiseType.perlin) NoiseType type,
+class LayerNoiseParams with _$LayerNoiseParams {
+  const factory LayerNoiseParams({
+    @Default(LayerNoiseType.perlin) LayerNoiseType type,
     @Default(1.0) double scale,
-    @Default(1.0) double frequency,
+    @Default(0.01) double frequency,
     @Default(1) int octaves,
     @Default(0.5) double persistence,
     @Default(2.0) double lacunarity,
@@ -31,7 +31,7 @@ class NoiseParams with _$NoiseParams {
     @Default(0.0) double clampMin,
     @Default(1.0) double clampMax,
     @Default(0) int seed,
-  }) = _NoiseParams;
+  }) = _LayerNoiseParams;
 }
 
 @freezed
@@ -40,8 +40,9 @@ class Layer with _$Layer {
     required String id,
     @Default('New Layer') String name,
     @Default(true) bool visible,
-    @Default(BlendMode.add) BlendMode blendMode,
+    @Default(LayerBlendMode.add) LayerBlendMode blendMode,
     @Default(1.0) double opacity,
-    @Default(NoiseParams()) NoiseParams noise,
+    @Default(LayerNoiseParams()) LayerNoiseParams noise,
+    @Default([]) List<double> cachedData,
   }) = _Layer;
 }

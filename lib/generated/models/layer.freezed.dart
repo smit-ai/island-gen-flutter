@@ -15,8 +15,8 @@ final _privateConstructorUsedError = UnsupportedError(
     'It seems like you constructed your class using `MyClass._()`. This constructor is only meant to be used by freezed and you are not supposed to need it nor use it.\nPlease check the documentation here for more information: https://github.com/rrousselGit/freezed#adding-getters-and-methods-to-our-models');
 
 /// @nodoc
-mixin _$NoiseParams {
-  NoiseType get type => throw _privateConstructorUsedError;
+mixin _$LayerNoiseParams {
+  LayerNoiseType get type => throw _privateConstructorUsedError;
   double get scale => throw _privateConstructorUsedError;
   double get frequency => throw _privateConstructorUsedError;
   int get octaves => throw _privateConstructorUsedError;
@@ -30,21 +30,21 @@ mixin _$NoiseParams {
   double get clampMax => throw _privateConstructorUsedError;
   int get seed => throw _privateConstructorUsedError;
 
-  /// Create a copy of NoiseParams
+  /// Create a copy of LayerNoiseParams
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
-  $NoiseParamsCopyWith<NoiseParams> get copyWith =>
+  $LayerNoiseParamsCopyWith<LayerNoiseParams> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
 /// @nodoc
-abstract class $NoiseParamsCopyWith<$Res> {
-  factory $NoiseParamsCopyWith(
-          NoiseParams value, $Res Function(NoiseParams) then) =
-      _$NoiseParamsCopyWithImpl<$Res, NoiseParams>;
+abstract class $LayerNoiseParamsCopyWith<$Res> {
+  factory $LayerNoiseParamsCopyWith(
+          LayerNoiseParams value, $Res Function(LayerNoiseParams) then) =
+      _$LayerNoiseParamsCopyWithImpl<$Res, LayerNoiseParams>;
   @useResult
   $Res call(
-      {NoiseType type,
+      {LayerNoiseType type,
       double scale,
       double frequency,
       int octaves,
@@ -60,16 +60,16 @@ abstract class $NoiseParamsCopyWith<$Res> {
 }
 
 /// @nodoc
-class _$NoiseParamsCopyWithImpl<$Res, $Val extends NoiseParams>
-    implements $NoiseParamsCopyWith<$Res> {
-  _$NoiseParamsCopyWithImpl(this._value, this._then);
+class _$LayerNoiseParamsCopyWithImpl<$Res, $Val extends LayerNoiseParams>
+    implements $LayerNoiseParamsCopyWith<$Res> {
+  _$LayerNoiseParamsCopyWithImpl(this._value, this._then);
 
   // ignore: unused_field
   final $Val _value;
   // ignore: unused_field
   final $Res Function($Val) _then;
 
-  /// Create a copy of NoiseParams
+  /// Create a copy of LayerNoiseParams
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -92,7 +92,7 @@ class _$NoiseParamsCopyWithImpl<$Res, $Val extends NoiseParams>
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as NoiseType,
+              as LayerNoiseType,
       scale: null == scale
           ? _value.scale
           : scale // ignore: cast_nullable_to_non_nullable
@@ -146,15 +146,15 @@ class _$NoiseParamsCopyWithImpl<$Res, $Val extends NoiseParams>
 }
 
 /// @nodoc
-abstract class _$$NoiseParamsImplCopyWith<$Res>
-    implements $NoiseParamsCopyWith<$Res> {
-  factory _$$NoiseParamsImplCopyWith(
-          _$NoiseParamsImpl value, $Res Function(_$NoiseParamsImpl) then) =
-      __$$NoiseParamsImplCopyWithImpl<$Res>;
+abstract class _$$LayerNoiseParamsImplCopyWith<$Res>
+    implements $LayerNoiseParamsCopyWith<$Res> {
+  factory _$$LayerNoiseParamsImplCopyWith(_$LayerNoiseParamsImpl value,
+          $Res Function(_$LayerNoiseParamsImpl) then) =
+      __$$LayerNoiseParamsImplCopyWithImpl<$Res>;
   @override
   @useResult
   $Res call(
-      {NoiseType type,
+      {LayerNoiseType type,
       double scale,
       double frequency,
       int octaves,
@@ -170,14 +170,14 @@ abstract class _$$NoiseParamsImplCopyWith<$Res>
 }
 
 /// @nodoc
-class __$$NoiseParamsImplCopyWithImpl<$Res>
-    extends _$NoiseParamsCopyWithImpl<$Res, _$NoiseParamsImpl>
-    implements _$$NoiseParamsImplCopyWith<$Res> {
-  __$$NoiseParamsImplCopyWithImpl(
-      _$NoiseParamsImpl _value, $Res Function(_$NoiseParamsImpl) _then)
+class __$$LayerNoiseParamsImplCopyWithImpl<$Res>
+    extends _$LayerNoiseParamsCopyWithImpl<$Res, _$LayerNoiseParamsImpl>
+    implements _$$LayerNoiseParamsImplCopyWith<$Res> {
+  __$$LayerNoiseParamsImplCopyWithImpl(_$LayerNoiseParamsImpl _value,
+      $Res Function(_$LayerNoiseParamsImpl) _then)
       : super(_value, _then);
 
-  /// Create a copy of NoiseParams
+  /// Create a copy of LayerNoiseParams
   /// with the given fields replaced by the non-null parameter values.
   @pragma('vm:prefer-inline')
   @override
@@ -196,11 +196,11 @@ class __$$NoiseParamsImplCopyWithImpl<$Res>
     Object? clampMax = null,
     Object? seed = null,
   }) {
-    return _then(_$NoiseParamsImpl(
+    return _then(_$LayerNoiseParamsImpl(
       type: null == type
           ? _value.type
           : type // ignore: cast_nullable_to_non_nullable
-              as NoiseType,
+              as LayerNoiseType,
       scale: null == scale
           ? _value.scale
           : scale // ignore: cast_nullable_to_non_nullable
@@ -255,11 +255,11 @@ class __$$NoiseParamsImplCopyWithImpl<$Res>
 
 /// @nodoc
 
-class _$NoiseParamsImpl implements _NoiseParams {
-  const _$NoiseParamsImpl(
-      {this.type = NoiseType.perlin,
+class _$LayerNoiseParamsImpl implements _LayerNoiseParams {
+  const _$LayerNoiseParamsImpl(
+      {this.type = LayerNoiseType.perlin,
       this.scale = 1.0,
-      this.frequency = 1.0,
+      this.frequency = 0.01,
       this.octaves = 1,
       this.persistence = 0.5,
       this.lacunarity = 2.0,
@@ -273,7 +273,7 @@ class _$NoiseParamsImpl implements _NoiseParams {
 
   @override
   @JsonKey()
-  final NoiseType type;
+  final LayerNoiseType type;
   @override
   @JsonKey()
   final double scale;
@@ -313,14 +313,14 @@ class _$NoiseParamsImpl implements _NoiseParams {
 
   @override
   String toString() {
-    return 'NoiseParams(type: $type, scale: $scale, frequency: $frequency, octaves: $octaves, persistence: $persistence, lacunarity: $lacunarity, offsetX: $offsetX, offsetY: $offsetY, rotation: $rotation, invert: $invert, clampMin: $clampMin, clampMax: $clampMax, seed: $seed)';
+    return 'LayerNoiseParams(type: $type, scale: $scale, frequency: $frequency, octaves: $octaves, persistence: $persistence, lacunarity: $lacunarity, offsetX: $offsetX, offsetY: $offsetY, rotation: $rotation, invert: $invert, clampMin: $clampMin, clampMax: $clampMax, seed: $seed)';
   }
 
   @override
   bool operator ==(Object other) {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
-            other is _$NoiseParamsImpl &&
+            other is _$LayerNoiseParamsImpl &&
             (identical(other.type, type) || other.type == type) &&
             (identical(other.scale, scale) || other.scale == scale) &&
             (identical(other.frequency, frequency) ||
@@ -359,18 +359,19 @@ class _$NoiseParamsImpl implements _NoiseParams {
       clampMax,
       seed);
 
-  /// Create a copy of NoiseParams
+  /// Create a copy of LayerNoiseParams
   /// with the given fields replaced by the non-null parameter values.
   @JsonKey(includeFromJson: false, includeToJson: false)
   @override
   @pragma('vm:prefer-inline')
-  _$$NoiseParamsImplCopyWith<_$NoiseParamsImpl> get copyWith =>
-      __$$NoiseParamsImplCopyWithImpl<_$NoiseParamsImpl>(this, _$identity);
+  _$$LayerNoiseParamsImplCopyWith<_$LayerNoiseParamsImpl> get copyWith =>
+      __$$LayerNoiseParamsImplCopyWithImpl<_$LayerNoiseParamsImpl>(
+          this, _$identity);
 }
 
-abstract class _NoiseParams implements NoiseParams {
-  const factory _NoiseParams(
-      {final NoiseType type,
+abstract class _LayerNoiseParams implements LayerNoiseParams {
+  const factory _LayerNoiseParams(
+      {final LayerNoiseType type,
       final double scale,
       final double frequency,
       final int octaves,
@@ -382,10 +383,10 @@ abstract class _NoiseParams implements NoiseParams {
       final bool invert,
       final double clampMin,
       final double clampMax,
-      final int seed}) = _$NoiseParamsImpl;
+      final int seed}) = _$LayerNoiseParamsImpl;
 
   @override
-  NoiseType get type;
+  LayerNoiseType get type;
   @override
   double get scale;
   @override
@@ -411,11 +412,11 @@ abstract class _NoiseParams implements NoiseParams {
   @override
   int get seed;
 
-  /// Create a copy of NoiseParams
+  /// Create a copy of LayerNoiseParams
   /// with the given fields replaced by the non-null parameter values.
   @override
   @JsonKey(includeFromJson: false, includeToJson: false)
-  _$$NoiseParamsImplCopyWith<_$NoiseParamsImpl> get copyWith =>
+  _$$LayerNoiseParamsImplCopyWith<_$LayerNoiseParamsImpl> get copyWith =>
       throw _privateConstructorUsedError;
 }
 
@@ -424,9 +425,10 @@ mixin _$Layer {
   String get id => throw _privateConstructorUsedError;
   String get name => throw _privateConstructorUsedError;
   bool get visible => throw _privateConstructorUsedError;
-  BlendMode get blendMode => throw _privateConstructorUsedError;
+  LayerBlendMode get blendMode => throw _privateConstructorUsedError;
   double get opacity => throw _privateConstructorUsedError;
-  NoiseParams get noise => throw _privateConstructorUsedError;
+  LayerNoiseParams get noise => throw _privateConstructorUsedError;
+  List<double> get cachedData => throw _privateConstructorUsedError;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -443,11 +445,12 @@ abstract class $LayerCopyWith<$Res> {
       {String id,
       String name,
       bool visible,
-      BlendMode blendMode,
+      LayerBlendMode blendMode,
       double opacity,
-      NoiseParams noise});
+      LayerNoiseParams noise,
+      List<double> cachedData});
 
-  $NoiseParamsCopyWith<$Res> get noise;
+  $LayerNoiseParamsCopyWith<$Res> get noise;
 }
 
 /// @nodoc
@@ -471,6 +474,7 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
     Object? blendMode = null,
     Object? opacity = null,
     Object? noise = null,
+    Object? cachedData = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -488,7 +492,7 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
       blendMode: null == blendMode
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
-              as BlendMode,
+              as LayerBlendMode,
       opacity: null == opacity
           ? _value.opacity
           : opacity // ignore: cast_nullable_to_non_nullable
@@ -496,7 +500,11 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
       noise: null == noise
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
-              as NoiseParams,
+              as LayerNoiseParams,
+      cachedData: null == cachedData
+          ? _value.cachedData
+          : cachedData // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ) as $Val);
   }
 
@@ -504,8 +512,8 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $NoiseParamsCopyWith<$Res> get noise {
-    return $NoiseParamsCopyWith<$Res>(_value.noise, (value) {
+  $LayerNoiseParamsCopyWith<$Res> get noise {
+    return $LayerNoiseParamsCopyWith<$Res>(_value.noise, (value) {
       return _then(_value.copyWith(noise: value) as $Val);
     });
   }
@@ -522,12 +530,13 @@ abstract class _$$LayerImplCopyWith<$Res> implements $LayerCopyWith<$Res> {
       {String id,
       String name,
       bool visible,
-      BlendMode blendMode,
+      LayerBlendMode blendMode,
       double opacity,
-      NoiseParams noise});
+      LayerNoiseParams noise,
+      List<double> cachedData});
 
   @override
-  $NoiseParamsCopyWith<$Res> get noise;
+  $LayerNoiseParamsCopyWith<$Res> get noise;
 }
 
 /// @nodoc
@@ -549,6 +558,7 @@ class __$$LayerImplCopyWithImpl<$Res>
     Object? blendMode = null,
     Object? opacity = null,
     Object? noise = null,
+    Object? cachedData = null,
   }) {
     return _then(_$LayerImpl(
       id: null == id
@@ -566,7 +576,7 @@ class __$$LayerImplCopyWithImpl<$Res>
       blendMode: null == blendMode
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
-              as BlendMode,
+              as LayerBlendMode,
       opacity: null == opacity
           ? _value.opacity
           : opacity // ignore: cast_nullable_to_non_nullable
@@ -574,7 +584,11 @@ class __$$LayerImplCopyWithImpl<$Res>
       noise: null == noise
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
-              as NoiseParams,
+              as LayerNoiseParams,
+      cachedData: null == cachedData
+          ? _value._cachedData
+          : cachedData // ignore: cast_nullable_to_non_nullable
+              as List<double>,
     ));
   }
 }
@@ -586,9 +600,11 @@ class _$LayerImpl implements _Layer {
       {required this.id,
       this.name = 'New Layer',
       this.visible = true,
-      this.blendMode = BlendMode.add,
+      this.blendMode = LayerBlendMode.add,
       this.opacity = 1.0,
-      this.noise = const NoiseParams()});
+      this.noise = const LayerNoiseParams(),
+      final List<double> cachedData = const []})
+      : _cachedData = cachedData;
 
   @override
   final String id;
@@ -600,17 +616,25 @@ class _$LayerImpl implements _Layer {
   final bool visible;
   @override
   @JsonKey()
-  final BlendMode blendMode;
+  final LayerBlendMode blendMode;
   @override
   @JsonKey()
   final double opacity;
   @override
   @JsonKey()
-  final NoiseParams noise;
+  final LayerNoiseParams noise;
+  final List<double> _cachedData;
+  @override
+  @JsonKey()
+  List<double> get cachedData {
+    if (_cachedData is EqualUnmodifiableListView) return _cachedData;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_cachedData);
+  }
 
   @override
   String toString() {
-    return 'Layer(id: $id, name: $name, visible: $visible, blendMode: $blendMode, opacity: $opacity, noise: $noise)';
+    return 'Layer(id: $id, name: $name, visible: $visible, blendMode: $blendMode, opacity: $opacity, noise: $noise, cachedData: $cachedData)';
   }
 
   @override
@@ -624,12 +648,14 @@ class _$LayerImpl implements _Layer {
             (identical(other.blendMode, blendMode) ||
                 other.blendMode == blendMode) &&
             (identical(other.opacity, opacity) || other.opacity == opacity) &&
-            (identical(other.noise, noise) || other.noise == noise));
+            (identical(other.noise, noise) || other.noise == noise) &&
+            const DeepCollectionEquality()
+                .equals(other._cachedData, _cachedData));
   }
 
   @override
-  int get hashCode =>
-      Object.hash(runtimeType, id, name, visible, blendMode, opacity, noise);
+  int get hashCode => Object.hash(runtimeType, id, name, visible, blendMode,
+      opacity, noise, const DeepCollectionEquality().hash(_cachedData));
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -645,9 +671,10 @@ abstract class _Layer implements Layer {
       {required final String id,
       final String name,
       final bool visible,
-      final BlendMode blendMode,
+      final LayerBlendMode blendMode,
       final double opacity,
-      final NoiseParams noise}) = _$LayerImpl;
+      final LayerNoiseParams noise,
+      final List<double> cachedData}) = _$LayerImpl;
 
   @override
   String get id;
@@ -656,11 +683,13 @@ abstract class _Layer implements Layer {
   @override
   bool get visible;
   @override
-  BlendMode get blendMode;
+  LayerBlendMode get blendMode;
   @override
   double get opacity;
   @override
-  NoiseParams get noise;
+  LayerNoiseParams get noise;
+  @override
+  List<double> get cachedData;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.

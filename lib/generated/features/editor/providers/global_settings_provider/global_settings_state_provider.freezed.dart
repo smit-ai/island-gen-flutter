@@ -121,9 +121,11 @@ class __$$GlobalSettingsStateImplCopyWithImpl<$Res>
 
 class _$GlobalSettingsStateImpl implements _GlobalSettingsState {
   const _$GlobalSettingsStateImpl(
-      {this.resolution = const Size(512, 512),
+      {this.resolution = const Size(64, 64),
       this.seed = 0,
       final List<Size> presets = const [
+        Size(64, 64),
+        Size(128, 128),
         Size(256, 256),
         Size(512, 512),
         Size(1024, 1024),

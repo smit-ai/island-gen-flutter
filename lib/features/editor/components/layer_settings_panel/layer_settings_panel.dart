@@ -62,10 +62,10 @@ class LayerSettingsPanel extends ConsumerWidget {
                               (value) => controller.updateOpacity(value),
                             ),
                             const SizedBox(height: 8),
-                            _buildDropdown<BlendMode>(
+                            _buildDropdown<LayerBlendMode>(
                               'Blend Mode',
                               layer.blendMode,
-                              BlendMode.values,
+                              LayerBlendMode.values,
                               (value) => controller.updateBlendMode(value),
                             ),
                           ],
@@ -77,10 +77,10 @@ class LayerSettingsPanel extends ConsumerWidget {
                         'Noise Settings',
                         Column(
                           children: [
-                            _buildDropdown<NoiseType>(
+                            _buildDropdown<LayerNoiseType>(
                               'Type',
                               layer.noise.type,
-                              NoiseType.values,
+                              LayerNoiseType.values,
                               (value) => controller.updateNoiseType(value),
                             ),
                             const SizedBox(height: 16),
@@ -94,8 +94,8 @@ class LayerSettingsPanel extends ConsumerWidget {
                             _buildSlider(
                               'Frequency',
                               layer.noise.frequency,
-                              0.1,
-                              10.0,
+                              0.001,
+                              0.3,
                               (value) => controller.updateNoiseFrequency(value),
                             ),
                             _buildIntSlider(
@@ -237,7 +237,7 @@ class LayerSettingsPanel extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label),
-            Text(value.toStringAsFixed(2)),
+            Text(value.toStringAsFixed(3)),
           ],
         ),
         Slider(
