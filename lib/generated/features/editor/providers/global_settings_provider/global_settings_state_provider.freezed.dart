@@ -18,6 +18,7 @@ final _privateConstructorUsedError = UnsupportedError(
 mixin _$GlobalSettingsState {
   Size get resolution => throw _privateConstructorUsedError;
   int get seed => throw _privateConstructorUsedError;
+  ViewMode get viewMode => throw _privateConstructorUsedError;
   List<Size> get presets => throw _privateConstructorUsedError;
 
   /// Create a copy of GlobalSettingsState
@@ -33,7 +34,7 @@ abstract class $GlobalSettingsStateCopyWith<$Res> {
           GlobalSettingsState value, $Res Function(GlobalSettingsState) then) =
       _$GlobalSettingsStateCopyWithImpl<$Res, GlobalSettingsState>;
   @useResult
-  $Res call({Size resolution, int seed, List<Size> presets});
+  $Res call({Size resolution, int seed, ViewMode viewMode, List<Size> presets});
 }
 
 /// @nodoc
@@ -53,6 +54,7 @@ class _$GlobalSettingsStateCopyWithImpl<$Res, $Val extends GlobalSettingsState>
   $Res call({
     Object? resolution = null,
     Object? seed = null,
+    Object? viewMode = null,
     Object? presets = null,
   }) {
     return _then(_value.copyWith(
@@ -64,6 +66,10 @@ class _$GlobalSettingsStateCopyWithImpl<$Res, $Val extends GlobalSettingsState>
           ? _value.seed
           : seed // ignore: cast_nullable_to_non_nullable
               as int,
+      viewMode: null == viewMode
+          ? _value.viewMode
+          : viewMode // ignore: cast_nullable_to_non_nullable
+              as ViewMode,
       presets: null == presets
           ? _value.presets
           : presets // ignore: cast_nullable_to_non_nullable
@@ -80,7 +86,7 @@ abstract class _$$GlobalSettingsStateImplCopyWith<$Res>
       __$$GlobalSettingsStateImplCopyWithImpl<$Res>;
   @override
   @useResult
-  $Res call({Size resolution, int seed, List<Size> presets});
+  $Res call({Size resolution, int seed, ViewMode viewMode, List<Size> presets});
 }
 
 /// @nodoc
@@ -98,6 +104,7 @@ class __$$GlobalSettingsStateImplCopyWithImpl<$Res>
   $Res call({
     Object? resolution = null,
     Object? seed = null,
+    Object? viewMode = null,
     Object? presets = null,
   }) {
     return _then(_$GlobalSettingsStateImpl(
@@ -109,6 +116,10 @@ class __$$GlobalSettingsStateImplCopyWithImpl<$Res>
           ? _value.seed
           : seed // ignore: cast_nullable_to_non_nullable
               as int,
+      viewMode: null == viewMode
+          ? _value.viewMode
+          : viewMode // ignore: cast_nullable_to_non_nullable
+              as ViewMode,
       presets: null == presets
           ? _value._presets
           : presets // ignore: cast_nullable_to_non_nullable
@@ -123,6 +134,7 @@ class _$GlobalSettingsStateImpl implements _GlobalSettingsState {
   const _$GlobalSettingsStateImpl(
       {this.resolution = const Size(64, 64),
       this.seed = 0,
+      this.viewMode = ViewMode.view2D,
       final List<Size> presets = const [
         Size(64, 64),
         Size(128, 128),
@@ -140,6 +152,9 @@ class _$GlobalSettingsStateImpl implements _GlobalSettingsState {
   @override
   @JsonKey()
   final int seed;
+  @override
+  @JsonKey()
+  final ViewMode viewMode;
   final List<Size> _presets;
   @override
   @JsonKey()
@@ -151,7 +166,7 @@ class _$GlobalSettingsStateImpl implements _GlobalSettingsState {
 
   @override
   String toString() {
-    return 'GlobalSettingsState(resolution: $resolution, seed: $seed, presets: $presets)';
+    return 'GlobalSettingsState(resolution: $resolution, seed: $seed, viewMode: $viewMode, presets: $presets)';
   }
 
   @override
@@ -162,11 +177,13 @@ class _$GlobalSettingsStateImpl implements _GlobalSettingsState {
             (identical(other.resolution, resolution) ||
                 other.resolution == resolution) &&
             (identical(other.seed, seed) || other.seed == seed) &&
+            (identical(other.viewMode, viewMode) ||
+                other.viewMode == viewMode) &&
             const DeepCollectionEquality().equals(other._presets, _presets));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, resolution, seed,
+  int get hashCode => Object.hash(runtimeType, resolution, seed, viewMode,
       const DeepCollectionEquality().hash(_presets));
 
   /// Create a copy of GlobalSettingsState
@@ -183,12 +200,15 @@ abstract class _GlobalSettingsState implements GlobalSettingsState {
   const factory _GlobalSettingsState(
       {final Size resolution,
       final int seed,
+      final ViewMode viewMode,
       final List<Size> presets}) = _$GlobalSettingsStateImpl;
 
   @override
   Size get resolution;
   @override
   int get seed;
+  @override
+  ViewMode get viewMode;
   @override
   List<Size> get presets;
 

@@ -5,11 +5,17 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'package:island_gen_flutter/generated/features/editor/providers/global_settings_provider/global_settings_state_provider.g.dart';
 part 'package:island_gen_flutter/generated/features/editor/providers/global_settings_provider/global_settings_state_provider.freezed.dart';
 
+enum ViewMode {
+  view2D,
+  view3D,
+}
+
 @freezed
 class GlobalSettingsState with _$GlobalSettingsState {
   const factory GlobalSettingsState({
     @Default(Size(64, 64)) Size resolution,
     @Default(0) int seed,
+    @Default(ViewMode.view2D) ViewMode viewMode,
     @Default([
       Size(64, 64),
       Size(128, 128),
@@ -32,7 +38,7 @@ class GlobalSettings extends _$GlobalSettings {
     state = state.copyWith(resolution: resolution);
   }
 
-  void updateSeed(int seed) {
-    state = state.copyWith(seed: seed);
+  void updateViewMode(ViewMode mode) {
+    state = state.copyWith(viewMode: mode);
   }
 }

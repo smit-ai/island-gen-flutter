@@ -6,7 +6,7 @@ part of 'package:island_gen_flutter/features/editor/providers/global_settings_pr
 // RiverpodGenerator
 // **************************************************************************
 
-String _$globalSettingsHash() => r'a99d5f6f897cace70eb97e668c9809e74a76524d';
+String _$globalSettingsHash() => r'59b2d3f8e7711b21db4a1754bceabbc2cc80993f';
 
 /// See also [GlobalSettings].
 @ProviderFor(GlobalSettings)
