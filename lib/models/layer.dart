@@ -21,7 +21,7 @@ class LayerNoiseParams with _$LayerNoiseParams {
     @Default(LayerNoiseType.perlin) LayerNoiseType type,
     @Default(1.0) double scale,
     @Default(0.01) double frequency,
-    @Default(1) int octaves,
+    @Default(4) int octaves,
     @Default(0.5) double persistence,
     @Default(2.0) double lacunarity,
     @Default(0.0) double offsetX,

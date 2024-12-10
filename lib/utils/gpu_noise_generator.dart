@@ -1,13 +1,25 @@
+import 'dart:typed_data';
 import 'dart:ui' as ui;
 import 'dart:ui' show FragmentProgram;
+import 'dart:ui' show FragmentShader;
 import 'package:flutter/material.dart';
 import 'package:island_gen_flutter/models/layer.dart';
 
 class GpuNoiseGenerator {
-  static Future<List<double>> generateHeightmap(Layer layer, Size resolution) async {
-    final program = await FragmentProgram.fromAsset('shaders/noise.frag');
-    final shader = program.fragmentShader();
+  static FragmentProgram? _program;
+  static FragmentShader? _shader;
 
+  static Future<void> _initShader() async {
+    if (_program == null) {
+      _program = await FragmentProgram.fromAsset('shaders/noise.frag');
+      _shader = _program!.fragmentShader();
+    }
+  }
+
+  static Future<List<double>> generateHeightmap(Layer layer, Size resolution) async {
+    await _initShader();
+
+    final shader = _shader!;
     // Set uniforms
     shader.setFloat(0, resolution.width);
     shader.setFloat(1, resolution.height);
@@ -18,10 +30,6 @@ class GpuNoiseGenerator {
     shader.setFloat(6, layer.noise.seed.toDouble());
     shader.setFloat(7, layer.noise.type.index.toDouble());
 
-    final size = resolution.width.toInt() * resolution.height.toInt();
-    final heightmap = List<double>.filled(size, 0.0);
-
-    // Create a picture recorder and canvas
     final recorder = ui.PictureRecorder();
     final canvas = Canvas(recorder);
 
@@ -32,19 +40,23 @@ class GpuNoiseGenerator {
       paint,
     );
 
-    // Convert to image
     final picture = recorder.endRecording();
+
     final image = await picture.toImage(
       resolution.width.toInt(),
       resolution.height.toInt(),
     );
 
-    // Read pixels
     final byteData = await image.toByteData();
-    if (byteData == null) throw Exception('Failed to read image data');
+    if (byteData == null) {
+      throw Exception('Failed to retrieve byte data from image');
+    }
 
-    // Convert RGBA to heightmap values (using only red channel)
     final pixels = byteData.buffer.asUint8List();
+    final size = resolution.width.toInt() * resolution.height.toInt();
+    final heightmap = Float32List(size);
+
+    // Convert RGBA to single-channel heightmap (using the red channel)
     for (var i = 0; i < size; i++) {
       heightmap[i] = pixels[i * 4] / 255.0;
     }

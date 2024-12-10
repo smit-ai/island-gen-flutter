@@ -260,7 +260,7 @@ class _$LayerNoiseParamsImpl implements _LayerNoiseParams {
       {this.type = LayerNoiseType.perlin,
       this.scale = 1.0,
       this.frequency = 0.01,
-      this.octaves = 1,
+      this.octaves = 4,
       this.persistence = 0.5,
       this.lacunarity = 2.0,
       this.offsetX = 0.0,
