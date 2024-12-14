@@ -12,6 +12,7 @@ class LayerController extends _$LayerController {
 
   @override
   Layer build(String layerId) {
+    print('LayerController build: $layerId');
     ref.listen(globalSettingsProvider, (previous, next) {
       if (previous?.resolution != next.resolution) {
         generateHeightmap();

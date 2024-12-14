@@ -1,7 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:island_gen_flutter/features/editor/components/layers_panel/controller/layer_panel_controller.dart';
-import 'package:island_gen_flutter/features/editor/providers/layer_provider/layer_provider.dart';
+import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_viewer/heightmap_painter.dart';
 
 class HeightmapViewer extends ConsumerWidget {
@@ -11,24 +10,22 @@ class HeightmapViewer extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLayerId = ref.watch(layerPanelControllerProvider.select((value) => value.selectedLayerId));
+    final selectedLayer = ref.watch(globalStateProvider.select((value) => value.selectedLayer));
 
-    if (selectedLayerId == null) {
+    if (selectedLayer == null) {
       return const Center(
         child: Text('No layer selected'),
       );
     }
 
-    final layer = ref.watch(layerControllerProvider(selectedLayerId));
-
-    if (layer.cachedData == null) {
+    if (selectedLayer.cachedData == null) {
       return const Center(
         child: Text('No heightmap data'),
       );
     }
 
     return CustomPaint(
-      painter: HeightmapPainter(heightmap: layer.cachedData!),
+      painter: HeightmapPainter(heightmap: selectedLayer.cachedData!),
       size: Size.infinite,
     );
   }

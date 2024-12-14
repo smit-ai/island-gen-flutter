@@ -45,7 +45,7 @@ class GlobalSettingsPanel extends ConsumerWidget {
                         border: Border.all(color: Colors.grey),
                         borderRadius: BorderRadius.circular(4),
                       ),
-                      child: DropdownButton<Size>(
+                      child: DropdownButton<Resolution>(
                         value: state.presets.contains(state.resolution) ? state.resolution : null,
                         hint: const Text('Select Resolution'),
                         isExpanded: true,
@@ -59,7 +59,7 @@ class GlobalSettingsPanel extends ConsumerWidget {
                             ),
                           );
                         }).toList(),
-                        onChanged: (Size? newValue) {
+                        onChanged: (Resolution? newValue) {
                           if (newValue != null) {
                             controller.updateResolution(newValue);
                           }

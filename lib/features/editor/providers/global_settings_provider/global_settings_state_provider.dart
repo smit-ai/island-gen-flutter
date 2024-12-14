@@ -1,4 +1,3 @@
-import 'package:flutter/material.dart';
 import 'package:freezed_annotation/freezed_annotation.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
@@ -11,30 +10,38 @@ enum ViewMode {
 }
 
 @freezed
-class GlobalSettingsState with _$GlobalSettingsState {
-  const factory GlobalSettingsState({
-    @Default(Size(64, 64)) Size resolution,
+class Resolution with _$Resolution {
+  const factory Resolution({
+    required int width,
+    required int height,
+  }) = _Resolution;
+}
+
+@freezed
+class GlobalSettingsModel with _$GlobalSettingsModel {
+  const factory GlobalSettingsModel({
+    @Default(Resolution(width: 64, height: 64)) Resolution resolution,
     @Default(0) int seed,
     @Default(ViewMode.view2D) ViewMode viewMode,
     @Default([
-      Size(64, 64),
-      Size(128, 128),
-      Size(256, 256),
-      Size(512, 512),
-      Size(1024, 1024),
-      Size(2048, 2048),
-      Size(4096, 4096),
+      Resolution(width: 64, height: 64),
+      Resolution(width: 128, height: 128),
+      Resolution(width: 256, height: 256),
+      Resolution(width: 512, height: 512),
+      Resolution(width: 1024, height: 1024),
+      Resolution(width: 2048, height: 2048),
+      Resolution(width: 4096, height: 4096),
     ])
-    List<Size> presets,
-  }) = _GlobalSettingsState;
+    List<Resolution> presets,
+  }) = _GlobalSettingsModel;
 }
 
 @Riverpod(keepAlive: true)
 class GlobalSettings extends _$GlobalSettings {
   @override
-  GlobalSettingsState build() => const GlobalSettingsState();
+  GlobalSettingsModel build() => const GlobalSettingsModel();
 
-  void updateResolution(Size resolution) {
+  void updateResolution(Resolution resolution) {
     state = state.copyWith(resolution: resolution);
   }
 

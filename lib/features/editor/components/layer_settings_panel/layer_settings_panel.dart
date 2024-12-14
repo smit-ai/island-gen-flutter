@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:island_gen_flutter/features/editor/components/layers_panel/controller/layer_panel_controller.dart';
+import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
 import 'package:island_gen_flutter/features/editor/providers/layer_provider/layer_provider.dart';
 import 'package:island_gen_flutter/models/layer.dart';
 
@@ -9,7 +9,7 @@ class LayerSettingsPanel extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLayerId = ref.watch(layerPanelControllerProvider.select((value) => value.selectedLayerId));
+    final selectedLayer = ref.watch(globalStateProvider.select((value) => value.selectedLayer));
 
     return Container(
       padding: const EdgeInsets.all(16),
@@ -31,14 +31,14 @@ class LayerSettingsPanel extends ConsumerWidget {
             ),
           ),
           const SizedBox(height: 16),
-          if (selectedLayerId == null)
+          if (selectedLayer == null)
             const Text('No layer selected')
           else
             Expanded(
               child: SingleChildScrollView(
                 child: Builder(builder: (BuildContext context) {
-                  final layer = ref.watch(layerControllerProvider(selectedLayerId));
-                  final controller = ref.watch(layerControllerProvider(selectedLayerId).notifier);
+                  final layer = ref.watch(layerControllerProvider(selectedLayer.id));
+                  final controller = ref.watch(layerControllerProvider(selectedLayer.id).notifier);
 
                   return Column(
                     crossAxisAlignment: CrossAxisAlignment.start,

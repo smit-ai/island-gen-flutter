@@ -6,12 +6,12 @@ part of 'package:island_gen_flutter/features/editor/providers/global_settings_pr
 // RiverpodGenerator
 // **************************************************************************
 
-String _$globalSettingsHash() => r'59b2d3f8e7711b21db4a1754bceabbc2cc80993f';
+String _$globalSettingsHash() => r'026e82fc28bbeb04486d4837d68b92cd57771eb7';
 
 /// See also [GlobalSettings].
 @ProviderFor(GlobalSettings)
 final globalSettingsProvider =
-    NotifierProvider<GlobalSettings, GlobalSettingsState>.internal(
+    NotifierProvider<GlobalSettings, GlobalSettingsModel>.internal(
   GlobalSettings.new,
   name: r'globalSettingsProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final globalSettingsProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$GlobalSettings = Notifier<GlobalSettingsState>;
+typedef _$GlobalSettings = Notifier<GlobalSettingsModel>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package

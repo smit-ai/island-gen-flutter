@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'package:island_gen_flutter/features/editor/components/layers_panel/controller/layer_panel_controller.dart';
+import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
 import 'package:island_gen_flutter/features/editor/providers/layer_provider/layer_provider.dart';
 
 class LayersPanelLayer extends ConsumerWidget {
@@ -14,11 +14,11 @@ class LayersPanelLayer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final layer = ref.watch(layerControllerProvider(layerId));
-    final isSelected = ref.watch(layerPanelControllerProvider.select((value) => value.selectedLayerId == layerId));
+    final isSelected = ref.watch(globalStateProvider.select((value) => value.selectedLayer?.id == layerId));
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: OutlinedButton(
-        onPressed: () => ref.read(layerPanelControllerProvider.notifier).selectLayer(layerId),
+        onPressed: () => ref.read(globalStateProvider.notifier).selectLayer(layerId),
         style: OutlinedButton.styleFrom(
           padding: const EdgeInsets.symmetric(vertical: 16),
           backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
