@@ -43,7 +43,6 @@ class Layer with _$Layer {
     @Default('New Layer') String name,
     @Default(true) bool visible,
     @Default(LayerBlendMode.add) LayerBlendMode blendMode,
-    @Default(1.0) double opacity,
     @Default(LayerNoiseParams()) LayerNoiseParams noise,
     @Default(null) ui.Image? cachedData,
   }) = _Layer;
