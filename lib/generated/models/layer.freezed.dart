@@ -426,7 +426,6 @@ mixin _$Layer {
   String get name => throw _privateConstructorUsedError;
   bool get visible => throw _privateConstructorUsedError;
   LayerBlendMode get blendMode => throw _privateConstructorUsedError;
-  double get opacity => throw _privateConstructorUsedError;
   LayerNoiseParams get noise => throw _privateConstructorUsedError;
   ui.Image? get cachedData => throw _privateConstructorUsedError;
 
@@ -446,7 +445,6 @@ abstract class $LayerCopyWith<$Res> {
       String name,
       bool visible,
       LayerBlendMode blendMode,
-      double opacity,
       LayerNoiseParams noise,
       ui.Image? cachedData});
 
@@ -472,7 +470,6 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
     Object? name = null,
     Object? visible = null,
     Object? blendMode = null,
-    Object? opacity = null,
     Object? noise = null,
     Object? cachedData = freezed,
   }) {
@@ -493,10 +490,6 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
               as LayerBlendMode,
-      opacity: null == opacity
-          ? _value.opacity
-          : opacity // ignore: cast_nullable_to_non_nullable
-              as double,
       noise: null == noise
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
@@ -531,7 +524,6 @@ abstract class _$$LayerImplCopyWith<$Res> implements $LayerCopyWith<$Res> {
       String name,
       bool visible,
       LayerBlendMode blendMode,
-      double opacity,
       LayerNoiseParams noise,
       ui.Image? cachedData});
 
@@ -556,7 +548,6 @@ class __$$LayerImplCopyWithImpl<$Res>
     Object? name = null,
     Object? visible = null,
     Object? blendMode = null,
-    Object? opacity = null,
     Object? noise = null,
     Object? cachedData = freezed,
   }) {
@@ -577,10 +568,6 @@ class __$$LayerImplCopyWithImpl<$Res>
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
               as LayerBlendMode,
-      opacity: null == opacity
-          ? _value.opacity
-          : opacity // ignore: cast_nullable_to_non_nullable
-              as double,
       noise: null == noise
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
@@ -601,7 +588,6 @@ class _$LayerImpl implements _Layer {
       this.name = 'New Layer',
       this.visible = true,
       this.blendMode = LayerBlendMode.add,
-      this.opacity = 1.0,
       this.noise = const LayerNoiseParams(),
       this.cachedData = null});
 
@@ -618,9 +604,6 @@ class _$LayerImpl implements _Layer {
   final LayerBlendMode blendMode;
   @override
   @JsonKey()
-  final double opacity;
-  @override
-  @JsonKey()
   final LayerNoiseParams noise;
   @override
   @JsonKey()
@@ -628,7 +611,7 @@ class _$LayerImpl implements _Layer {
 
   @override
   String toString() {
-    return 'Layer(id: $id, name: $name, visible: $visible, blendMode: $blendMode, opacity: $opacity, noise: $noise, cachedData: $cachedData)';
+    return 'Layer(id: $id, name: $name, visible: $visible, blendMode: $blendMode, noise: $noise, cachedData: $cachedData)';
   }
 
   @override
@@ -641,15 +624,14 @@ class _$LayerImpl implements _Layer {
             (identical(other.visible, visible) || other.visible == visible) &&
             (identical(other.blendMode, blendMode) ||
                 other.blendMode == blendMode) &&
-            (identical(other.opacity, opacity) || other.opacity == opacity) &&
             (identical(other.noise, noise) || other.noise == noise) &&
             (identical(other.cachedData, cachedData) ||
                 other.cachedData == cachedData));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, visible, blendMode, opacity, noise, cachedData);
+  int get hashCode =>
+      Object.hash(runtimeType, id, name, visible, blendMode, noise, cachedData);
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -666,7 +648,6 @@ abstract class _Layer implements Layer {
       final String name,
       final bool visible,
       final LayerBlendMode blendMode,
-      final double opacity,
       final LayerNoiseParams noise,
       final ui.Image? cachedData}) = _$LayerImpl;
 
@@ -678,8 +659,6 @@ abstract class _Layer implements Layer {
   bool get visible;
   @override
   LayerBlendMode get blendMode;
-  @override
-  double get opacity;
   @override
   LayerNoiseParams get noise;
   @override

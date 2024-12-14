@@ -15,6 +15,7 @@ class GlobalStateModel with _$GlobalStateModel {
     @Default(false) bool isLoading,
     @Default(GlobalSettingsModel()) GlobalSettingsModel settings,
     @Default([]) List<Layer> layerStack,
+    @Default([]) List<Layer> activeLayerStack,
     @Default(null) Layer? selectedLayer,
   }) = _GlobalStateModel;
 }
@@ -34,10 +35,17 @@ class GlobalState extends _$GlobalState {
     }
 
     final selectedLayer = _selectedLayerId != null ? layerStack.firstWhereOrNull((layer) => layer.id == _selectedLayerId) : null;
+    final activeLayerStack = <Layer>[];
+    if (selectedLayer != null) {
+      activeLayerStack.add(selectedLayer);
+    } else {
+      activeLayerStack.addAll(layerStack);
+    }
 
     return GlobalStateModel(
       settings: globalSettings,
       layerStack: layerStack,
+      activeLayerStack: activeLayerStack,
       selectedLayer: selectedLayer,
     );
   }

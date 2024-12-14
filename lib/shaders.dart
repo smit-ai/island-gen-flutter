@@ -22,13 +22,14 @@ gpu.ShaderLibrary get shaderLibrary {
     final terrainFrag = _shaderLibrary!['TerrainFragment'];
     final noiseVert = _shaderLibrary!['NoiseVertex'];
     final noiseFrag = _shaderLibrary!['NoiseFragment'];
+    final blendFrag = _shaderLibrary!['BlendFragment'];
 
     debugPrint('Shader availability:');
     debugPrint('TerrainVertex: ${terrainVert != null}');
     debugPrint('TerrainFragment: ${terrainFrag != null}');
     debugPrint('NoiseVertex: ${noiseVert != null}');
     debugPrint('NoiseFragment: ${noiseFrag != null}');
-
+    debugPrint('BlendFragment: ${blendFrag != null}');
     debugPrint('Successfully loaded shader bundle');
     return _shaderLibrary!;
   } catch (e) {

@@ -14,5 +14,9 @@
     "NoiseFragment": {
         "type": "fragment",
         "file": "shaders/noise.frag"
+    },
+    "BlendFragment": {
+        "type": "fragment",
+        "file": "shaders/blend.frag"
     }
 }

@@ -23,8 +23,8 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
   @override
   void initState() {
     final heightmap = ref.read(heightmapDataProvider);
-    if (heightmap != null) {
-      _initializeTerrain(heightmap);
+    if (heightmap.hasValue) {
+      _initializeTerrain(heightmap.requireValue);
     }
     super.initState();
   }
@@ -91,9 +91,9 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
 
   @override
   Widget build(BuildContext context) {
-    ref.listen(heightmapDataProvider, (previous, ui.Image? next) {
-      if (next != previous && next != null) {
-        _initializeTerrain(next);
+    ref.listen(heightmapDataProvider, (previous, next) {
+      if (next.hasValue) {
+        _initializeTerrain(next.requireValue);
       }
     });
     if (_isLoading) {

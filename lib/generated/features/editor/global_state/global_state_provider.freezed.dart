@@ -19,6 +19,7 @@ mixin _$GlobalStateModel {
   bool get isLoading => throw _privateConstructorUsedError;
   GlobalSettingsModel get settings => throw _privateConstructorUsedError;
   List<Layer> get layerStack => throw _privateConstructorUsedError;
+  List<Layer> get activeLayerStack => throw _privateConstructorUsedError;
   Layer? get selectedLayer => throw _privateConstructorUsedError;
 
   /// Create a copy of GlobalStateModel
@@ -38,6 +39,7 @@ abstract class $GlobalStateModelCopyWith<$Res> {
       {bool isLoading,
       GlobalSettingsModel settings,
       List<Layer> layerStack,
+      List<Layer> activeLayerStack,
       Layer? selectedLayer});
 
   $GlobalSettingsModelCopyWith<$Res> get settings;
@@ -62,6 +64,7 @@ class _$GlobalStateModelCopyWithImpl<$Res, $Val extends GlobalStateModel>
     Object? isLoading = null,
     Object? settings = null,
     Object? layerStack = null,
+    Object? activeLayerStack = null,
     Object? selectedLayer = freezed,
   }) {
     return _then(_value.copyWith(
@@ -76,6 +79,10 @@ class _$GlobalStateModelCopyWithImpl<$Res, $Val extends GlobalStateModel>
       layerStack: null == layerStack
           ? _value.layerStack
           : layerStack // ignore: cast_nullable_to_non_nullable
+              as List<Layer>,
+      activeLayerStack: null == activeLayerStack
+          ? _value.activeLayerStack
+          : activeLayerStack // ignore: cast_nullable_to_non_nullable
               as List<Layer>,
       selectedLayer: freezed == selectedLayer
           ? _value.selectedLayer
@@ -121,6 +128,7 @@ abstract class _$$GlobalStateModelImplCopyWith<$Res>
       {bool isLoading,
       GlobalSettingsModel settings,
       List<Layer> layerStack,
+      List<Layer> activeLayerStack,
       Layer? selectedLayer});
 
   @override
@@ -145,6 +153,7 @@ class __$$GlobalStateModelImplCopyWithImpl<$Res>
     Object? isLoading = null,
     Object? settings = null,
     Object? layerStack = null,
+    Object? activeLayerStack = null,
     Object? selectedLayer = freezed,
   }) {
     return _then(_$GlobalStateModelImpl(
@@ -159,6 +168,10 @@ class __$$GlobalStateModelImplCopyWithImpl<$Res>
       layerStack: null == layerStack
           ? _value._layerStack
           : layerStack // ignore: cast_nullable_to_non_nullable
+              as List<Layer>,
+      activeLayerStack: null == activeLayerStack
+          ? _value._activeLayerStack
+          : activeLayerStack // ignore: cast_nullable_to_non_nullable
               as List<Layer>,
       selectedLayer: freezed == selectedLayer
           ? _value.selectedLayer
@@ -175,8 +188,10 @@ class _$GlobalStateModelImpl implements _GlobalStateModel {
       {this.isLoading = false,
       this.settings = const GlobalSettingsModel(),
       final List<Layer> layerStack = const [],
+      final List<Layer> activeLayerStack = const [],
       this.selectedLayer = null})
-      : _layerStack = layerStack;
+      : _layerStack = layerStack,
+        _activeLayerStack = activeLayerStack;
 
   @override
   @JsonKey()
@@ -193,13 +208,23 @@ class _$GlobalStateModelImpl implements _GlobalStateModel {
     return EqualUnmodifiableListView(_layerStack);
   }
 
+  final List<Layer> _activeLayerStack;
+  @override
+  @JsonKey()
+  List<Layer> get activeLayerStack {
+    if (_activeLayerStack is EqualUnmodifiableListView)
+      return _activeLayerStack;
+    // ignore: implicit_dynamic_type
+    return EqualUnmodifiableListView(_activeLayerStack);
+  }
+
   @override
   @JsonKey()
   final Layer? selectedLayer;
 
   @override
   String toString() {
-    return 'GlobalStateModel(isLoading: $isLoading, settings: $settings, layerStack: $layerStack, selectedLayer: $selectedLayer)';
+    return 'GlobalStateModel(isLoading: $isLoading, settings: $settings, layerStack: $layerStack, activeLayerStack: $activeLayerStack, selectedLayer: $selectedLayer)';
   }
 
   @override
@@ -213,13 +238,20 @@ class _$GlobalStateModelImpl implements _GlobalStateModel {
                 other.settings == settings) &&
             const DeepCollectionEquality()
                 .equals(other._layerStack, _layerStack) &&
+            const DeepCollectionEquality()
+                .equals(other._activeLayerStack, _activeLayerStack) &&
             (identical(other.selectedLayer, selectedLayer) ||
                 other.selectedLayer == selectedLayer));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, isLoading, settings,
-      const DeepCollectionEquality().hash(_layerStack), selectedLayer);
+  int get hashCode => Object.hash(
+      runtimeType,
+      isLoading,
+      settings,
+      const DeepCollectionEquality().hash(_layerStack),
+      const DeepCollectionEquality().hash(_activeLayerStack),
+      selectedLayer);
 
   /// Create a copy of GlobalStateModel
   /// with the given fields replaced by the non-null parameter values.
@@ -236,6 +268,7 @@ abstract class _GlobalStateModel implements GlobalStateModel {
       {final bool isLoading,
       final GlobalSettingsModel settings,
       final List<Layer> layerStack,
+      final List<Layer> activeLayerStack,
       final Layer? selectedLayer}) = _$GlobalStateModelImpl;
 
   @override
@@ -244,6 +277,8 @@ abstract class _GlobalStateModel implements GlobalStateModel {
   GlobalSettingsModel get settings;
   @override
   List<Layer> get layerStack;
+  @override
+  List<Layer> get activeLayerStack;
   @override
   Layer? get selectedLayer;
 

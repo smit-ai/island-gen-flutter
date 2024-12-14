@@ -6,12 +6,12 @@ part of 'package:island_gen_flutter/features/editor/providers/heightmap_provider
 // RiverpodGenerator
 // **************************************************************************
 
-String _$heightmapDataHash() => r'1bc116e1f55fe58d56083239b866f46d49e8918b';
+String _$heightmapDataHash() => r'3b98d4e1d3ff91431da004ad418c05916604fbb3';
 
 /// See also [HeightmapData].
 @ProviderFor(HeightmapData)
 final heightmapDataProvider =
-    NotifierProvider<HeightmapData, ui.Image?>.internal(
+    NotifierProvider<HeightmapData, AsyncValue<ui.Image>>.internal(
   HeightmapData.new,
   name: r'heightmapDataProvider',
   debugGetCreateSourceHash: const bool.fromEnvironment('dart.vm.product')
@@ -21,6 +21,6 @@ final heightmapDataProvider =
   allTransitiveDependencies: null,
 );
 
-typedef _$HeightmapData = Notifier<ui.Image?>;
+typedef _$HeightmapData = Notifier<AsyncValue<ui.Image>>;
 // ignore_for_file: type=lint
 // ignore_for_file: subtype_of_sealed_class, invalid_use_of_internal_member, invalid_use_of_visible_for_testing_member, deprecated_member_use_from_same_package
