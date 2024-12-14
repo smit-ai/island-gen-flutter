@@ -1,7 +1,7 @@
 import 'dart:async';
 import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
+import 'package:island_gen_flutter/features/heightmap_generator/heightmap_generator.dart';
 import 'package:island_gen_flutter/models/layer.dart';
-import 'package:island_gen_flutter/utils/hightmap_generator.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
 
 part 'package:island_gen_flutter/generated/features/editor/providers/layer_provider/layer_provider.g.dart';
@@ -29,8 +29,16 @@ class LayerController extends _$LayerController {
   }
 
   void generateHeightmap() async {
-    final resolution = ref.read(globalSettingsProvider).resolution;
-    final heightmap = await HeightmapGenerator.generateHeightmap(state, resolution);
+    final globalSettings = ref.read(globalSettingsProvider);
+    final resolution = globalSettings.resolution;
+    final heightmap = await HeightmapGenerator.noise(
+      resolution.width.toInt(),
+      resolution.height.toInt(),
+      scale: state.noise.scale,
+      octaves: state.noise.octaves,
+      persistence: state.noise.persistence,
+      seed: state.noise.seed,
+    );
     state = state.copyWith(cachedData: heightmap);
   }
 

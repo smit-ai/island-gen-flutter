@@ -1,3 +1,5 @@
+import 'dart:ui' as ui;
+
 import 'package:freezed_annotation/freezed_annotation.dart';
 
 part 'package:island_gen_flutter/generated/models/layer.freezed.dart';
@@ -43,6 +45,6 @@ class Layer with _$Layer {
     @Default(LayerBlendMode.add) LayerBlendMode blendMode,
     @Default(1.0) double opacity,
     @Default(LayerNoiseParams()) LayerNoiseParams noise,
-    @Default([]) List<double> cachedData,
+    @Default(null) ui.Image? cachedData,
   }) = _Layer;
 }

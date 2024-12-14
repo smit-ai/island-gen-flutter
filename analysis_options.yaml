@@ -19,6 +19,7 @@ linter:
     avoid_print: false
     always_use_package_imports: true
 
+
 analyzer:
   plugins:
     - custom_lint

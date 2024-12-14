@@ -33,7 +33,8 @@ fi
 
 # Step 2: Run the build_runner to generate files
 echo "Running build_runner..."
-dart run build_runner build --delete-conflicting-outputs
+flutter pub run build_runner build
+# dart run build_runner build --delete-conflicting-outputs --enable-experiment=native-assets
 
 # Step 3: Define the target directory for generated files
 GENERATED_DIR="lib/generated"

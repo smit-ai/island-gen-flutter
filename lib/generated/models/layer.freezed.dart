@@ -428,7 +428,7 @@ mixin _$Layer {
   LayerBlendMode get blendMode => throw _privateConstructorUsedError;
   double get opacity => throw _privateConstructorUsedError;
   LayerNoiseParams get noise => throw _privateConstructorUsedError;
-  List<double> get cachedData => throw _privateConstructorUsedError;
+  ui.Image? get cachedData => throw _privateConstructorUsedError;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -448,7 +448,7 @@ abstract class $LayerCopyWith<$Res> {
       LayerBlendMode blendMode,
       double opacity,
       LayerNoiseParams noise,
-      List<double> cachedData});
+      ui.Image? cachedData});
 
   $LayerNoiseParamsCopyWith<$Res> get noise;
 }
@@ -474,7 +474,7 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
     Object? blendMode = null,
     Object? opacity = null,
     Object? noise = null,
-    Object? cachedData = null,
+    Object? cachedData = freezed,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -501,10 +501,10 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
               as LayerNoiseParams,
-      cachedData: null == cachedData
+      cachedData: freezed == cachedData
           ? _value.cachedData
           : cachedData // ignore: cast_nullable_to_non_nullable
-              as List<double>,
+              as ui.Image?,
     ) as $Val);
   }
 
@@ -533,7 +533,7 @@ abstract class _$$LayerImplCopyWith<$Res> implements $LayerCopyWith<$Res> {
       LayerBlendMode blendMode,
       double opacity,
       LayerNoiseParams noise,
-      List<double> cachedData});
+      ui.Image? cachedData});
 
   @override
   $LayerNoiseParamsCopyWith<$Res> get noise;
@@ -558,7 +558,7 @@ class __$$LayerImplCopyWithImpl<$Res>
     Object? blendMode = null,
     Object? opacity = null,
     Object? noise = null,
-    Object? cachedData = null,
+    Object? cachedData = freezed,
   }) {
     return _then(_$LayerImpl(
       id: null == id
@@ -585,10 +585,10 @@ class __$$LayerImplCopyWithImpl<$Res>
           ? _value.noise
           : noise // ignore: cast_nullable_to_non_nullable
               as LayerNoiseParams,
-      cachedData: null == cachedData
-          ? _value._cachedData
+      cachedData: freezed == cachedData
+          ? _value.cachedData
           : cachedData // ignore: cast_nullable_to_non_nullable
-              as List<double>,
+              as ui.Image?,
     ));
   }
 }
@@ -603,8 +603,7 @@ class _$LayerImpl implements _Layer {
       this.blendMode = LayerBlendMode.add,
       this.opacity = 1.0,
       this.noise = const LayerNoiseParams(),
-      final List<double> cachedData = const []})
-      : _cachedData = cachedData;
+      this.cachedData = null});
 
   @override
   final String id;
@@ -623,14 +622,9 @@ class _$LayerImpl implements _Layer {
   @override
   @JsonKey()
   final LayerNoiseParams noise;
-  final List<double> _cachedData;
   @override
   @JsonKey()
-  List<double> get cachedData {
-    if (_cachedData is EqualUnmodifiableListView) return _cachedData;
-    // ignore: implicit_dynamic_type
-    return EqualUnmodifiableListView(_cachedData);
-  }
+  final ui.Image? cachedData;
 
   @override
   String toString() {
@@ -649,13 +643,13 @@ class _$LayerImpl implements _Layer {
                 other.blendMode == blendMode) &&
             (identical(other.opacity, opacity) || other.opacity == opacity) &&
             (identical(other.noise, noise) || other.noise == noise) &&
-            const DeepCollectionEquality()
-                .equals(other._cachedData, _cachedData));
+            (identical(other.cachedData, cachedData) ||
+                other.cachedData == cachedData));
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, id, name, visible, blendMode,
-      opacity, noise, const DeepCollectionEquality().hash(_cachedData));
+  int get hashCode => Object.hash(
+      runtimeType, id, name, visible, blendMode, opacity, noise, cachedData);
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -674,7 +668,7 @@ abstract class _Layer implements Layer {
       final LayerBlendMode blendMode,
       final double opacity,
       final LayerNoiseParams noise,
-      final List<double> cachedData}) = _$LayerImpl;
+      final ui.Image? cachedData}) = _$LayerImpl;
 
   @override
   String get id;
@@ -689,7 +683,7 @@ abstract class _Layer implements Layer {
   @override
   LayerNoiseParams get noise;
   @override
-  List<double> get cachedData;
+  ui.Image? get cachedData;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.

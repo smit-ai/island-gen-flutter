@@ -1,0 +1,18 @@
+{
+    "TerrainVertex": {
+        "type": "vertex",
+        "file": "shaders/terrain.vert"
+    },
+    "TerrainFragment": {
+        "type": "fragment",
+        "file": "shaders/terrain.frag"
+    },
+    "NoiseVertex": {
+        "type": "vertex",
+        "file": "shaders/noise.vert"
+    },
+    "NoiseFragment": {
+        "type": "fragment",
+        "file": "shaders/noise.frag"
+    }
+}
