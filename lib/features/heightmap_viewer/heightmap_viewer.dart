@@ -11,15 +11,16 @@ class HeightmapViewer extends ConsumerWidget {
   @override
   Widget build(BuildContext context, WidgetRef ref) {
     final heightmap = ref.watch(heightmapDataProvider);
-    if (heightmap.hasError) {
-      return const Center(
-        child: Text('No heightmap data'),
-      );
-    }
 
     if (heightmap.isLoading) {
       return const Center(
         child: Text('Loading heightmap...'),
+      );
+    }
+
+    if (heightmap.hasError) {
+      return const Center(
+        child: Text('No heightmap data'),
       );
     }
 

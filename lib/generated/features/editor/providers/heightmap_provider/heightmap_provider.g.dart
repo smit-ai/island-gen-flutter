@@ -6,7 +6,7 @@ part of 'package:island_gen_flutter/features/editor/providers/heightmap_provider
 // RiverpodGenerator
 // **************************************************************************
 
-String _$heightmapDataHash() => r'3b98d4e1d3ff91431da004ad418c05916604fbb3';
+String _$heightmapDataHash() => r'2a3d36d8004c3c68828ccadfa9357c8f163de2fb';
 
 /// See also [HeightmapData].
 @ProviderFor(HeightmapData)

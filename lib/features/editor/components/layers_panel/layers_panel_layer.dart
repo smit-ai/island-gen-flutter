@@ -15,12 +15,15 @@ class LayersPanelLayer extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final layer = ref.watch(layerControllerProvider(layerId));
     final isSelected = ref.watch(globalStateProvider.select((value) => value.selectedLayer?.id == layerId));
+    final isIsolated = ref.watch(globalStateProvider.select((value) => value.isolatedLayerIds.contains(layerId)));
+    final hasIsolatedLayers = ref.watch(globalStateProvider.select((value) => value.isolatedLayerIds.isNotEmpty));
+
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 4),
       child: OutlinedButton(
         onPressed: () => ref.read(globalStateProvider.notifier).selectLayer(layerId),
         style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16),
+          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
           backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
           side: BorderSide(
             color: isSelected ? Colors.blue : Colors.grey,
@@ -37,17 +40,27 @@ class LayersPanelLayer extends ConsumerWidget {
               color: isSelected ? Colors.blue : Colors.grey,
             ),
             const SizedBox(width: 8),
-            Text(
-              layer.name,
-              style: TextStyle(
-                color: isSelected ? Colors.blue : Colors.grey,
+            Expanded(
+              child: Text(
+                layer.name,
+                style: TextStyle(
+                  color: isSelected ? Colors.blue : Colors.grey,
+                ),
+                overflow: TextOverflow.ellipsis,
               ),
             ),
-            const Spacer(),
-            Icon(
-              Icons.visibility,
-              size: 16,
-              color: isSelected ? Colors.blue : Colors.grey,
+            const SizedBox(width: 8),
+            // Isolation toggle
+            IconButton(
+              onPressed: () => ref.read(globalStateProvider.notifier).toggleIsolateLayer(layerId),
+              icon: Icon(
+                isIsolated ? Icons.visibility : (hasIsolatedLayers ? Icons.visibility_off : Icons.visibility),
+                size: 16,
+              ),
+              color: isIsolated ? Colors.blue : (hasIsolatedLayers ? Colors.red : Colors.grey),
+              tooltip: isIsolated ? 'Remove from isolation' : (hasIsolatedLayers ? 'Add to isolation' : 'Isolate layer'),
+              padding: EdgeInsets.zero,
+              constraints: const BoxConstraints(),
             ),
           ],
         ),

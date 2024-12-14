@@ -17,6 +17,7 @@ class GlobalStateModel with _$GlobalStateModel {
     @Default([]) List<Layer> layerStack,
     @Default([]) List<Layer> activeLayerStack,
     @Default(null) Layer? selectedLayer,
+    @Default([]) List<String> isolatedLayerIds,
   }) = _GlobalStateModel;
 }
 
@@ -24,6 +25,7 @@ class GlobalStateModel with _$GlobalStateModel {
 class GlobalState extends _$GlobalState {
   final List<String> _layerIds = [];
   String? _selectedLayerId;
+  final List<String> _isolatedLayerIds = [];
 
   @override
   GlobalStateModel build() {
@@ -36,10 +38,16 @@ class GlobalState extends _$GlobalState {
 
     final selectedLayer = _selectedLayerId != null ? layerStack.firstWhereOrNull((layer) => layer.id == _selectedLayerId) : null;
     final activeLayerStack = <Layer>[];
-    if (selectedLayer != null) {
-      activeLayerStack.add(selectedLayer);
-    } else {
+
+    if (_isolatedLayerIds.isEmpty) {
       activeLayerStack.addAll(layerStack);
+    } else {
+      for (final layerId in _isolatedLayerIds) {
+        final layer = layerStack.firstWhereOrNull((layer) => layer.id == layerId);
+        if (layer != null) {
+          activeLayerStack.add(layer);
+        }
+      }
     }
 
     return GlobalStateModel(
@@ -47,7 +55,17 @@ class GlobalState extends _$GlobalState {
       layerStack: layerStack,
       activeLayerStack: activeLayerStack,
       selectedLayer: selectedLayer,
+      isolatedLayerIds: _isolatedLayerIds,
     );
+  }
+
+  void toggleIsolateLayer(String layerId) {
+    if (_isolatedLayerIds.contains(layerId)) {
+      _isolatedLayerIds.remove(layerId);
+    } else {
+      _isolatedLayerIds.add(layerId);
+    }
+    ref.invalidateSelf();
   }
 
   void selectLayer(String? layerId) {

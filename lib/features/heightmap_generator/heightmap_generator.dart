@@ -124,6 +124,28 @@ class HeightmapGenerator {
       return validLayers.first.cachedData!;
     }
 
+    // Create vertex buffer for quad
+    final vertices = Float32List.fromList([
+      // pos(xy), uv
+      -1.0, -1.0, 0.0, 0.0, // Bottom left
+      1.0, -1.0, 1.0, 0.0, // Bottom right
+      -1.0, 1.0, 0.0, 1.0, // Top left
+      1.0, 1.0, 1.0, 1.0, // Top right
+    ]);
+
+    final indices = Uint16List.fromList([
+      0, 1, 2, // First triangle
+      2, 1, 3, // Second triangle
+    ]);
+
+    final vertexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
+      ByteData.sublistView(vertices),
+    )!;
+
+    final indexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
+      ByteData.sublistView(indices),
+    )!;
+
     // Get shaders for blending
     final vert = shaderLibrary['NoiseVertex']!;
     final frag = shaderLibrary['BlendFragment']!;
@@ -172,6 +194,25 @@ class HeightmapGenerator {
 
       // Bind pipeline and resources
       renderPass.bindPipeline(pipeline);
+      renderPass.bindVertexBuffer(
+        gpu.BufferView(
+          vertexBuffer,
+          offsetInBytes: 0,
+          lengthInBytes: vertexBuffer.sizeInBytes,
+        ),
+        4, // 4 vertices
+      );
+
+      renderPass.bindIndexBuffer(
+        gpu.BufferView(
+          indexBuffer,
+          offsetInBytes: 0,
+          lengthInBytes: indexBuffer.sizeInBytes,
+        ),
+        gpu.IndexType.int16,
+        6, // 6 indices
+      );
+
       renderPass.bindTexture(
         pipeline.fragmentShader.getUniformSlot('baseTexture'),
         currentTexture,
