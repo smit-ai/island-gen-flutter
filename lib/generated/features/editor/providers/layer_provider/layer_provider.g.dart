@@ -6,7 +6,7 @@ part of 'package:island_gen_flutter/features/editor/providers/layer_provider/lay
 // RiverpodGenerator
 // **************************************************************************
 
-String _$layerControllerHash() => r'11fe53dc3c6c01cfa773460d8a7a970bbf42f434';
+String _$layerControllerHash() => r'ecc6dffafb07e59c0e8e64130cdc5aa53d0955a8';
 
 /// Copied from Dart SDK
 class _SystemHash {

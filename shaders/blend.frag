@@ -5,7 +5,7 @@ uniform sampler2D blendTexture;  // Layer to blend
 
 uniform BlendParams {
     float blendMode;  // 0=Min, 1=Max, 2=Add, 3=Subtract
-    float opacity;
+    float influence;  // Layer influence (0-1)
 };
 
 out vec4 frag_color;
@@ -54,8 +54,8 @@ void main() {
             result = blendAdd(baseHeight, blendHeight);
     }
     
-    // Apply opacity
-    result = mix(baseHeight, result, opacity);
+    // Apply influence
+    result = mix(baseHeight, result, influence);
     
     // Output grayscale heightmap
     frag_color = vec4(vec3(result), 1.0);

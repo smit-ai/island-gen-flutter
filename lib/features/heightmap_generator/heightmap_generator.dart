@@ -168,7 +168,7 @@ class HeightmapGenerator {
       // Create blend mode and opacity uniform buffer
       final uniformData = Float32List(2);
       uniformData[0] = nextLayer.blendMode.index.toDouble();
-      uniformData[1] = 1.0; // Default opacity (fully opaque)
+      uniformData[1] = nextLayer.influence;
 
       final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
         ByteData.sublistView(uniformData),

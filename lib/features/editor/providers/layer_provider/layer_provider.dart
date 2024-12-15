@@ -48,6 +48,10 @@ class LayerController extends _$LayerController {
     state = state.copyWith(name: name);
   }
 
+  void updateInfluence(double influence) {
+    state = state.copyWith(influence: influence);
+  }
+
   void updateBlendMode(LayerBlendMode blendMode) {
     state = state.copyWith(blendMode: blendMode);
   }

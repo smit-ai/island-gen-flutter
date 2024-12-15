@@ -42,6 +42,7 @@ class Layer with _$Layer {
     required String id,
     @Default('New Layer') String name,
     @Default(true) bool visible,
+    @Default(1.0) double influence,
     @Default(LayerBlendMode.add) LayerBlendMode blendMode,
     @Default(LayerNoiseParams()) LayerNoiseParams noise,
     @Default(null) ui.Image? cachedData,

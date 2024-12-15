@@ -60,6 +60,15 @@ class LayerSettingsPanel extends ConsumerWidget {
                               LayerBlendMode.values,
                               (value) => controller.updateBlendMode(value),
                             ),
+                            const SizedBox(height: 8),
+                            _buildSlider(
+                              'Influence',
+                              layer.influence,
+                              0.0,
+                              1.0,
+                              (value) => controller.updateInfluence(value),
+                              displayPercent: true,
+                            ),
                           ],
                         ),
                       ),
@@ -220,8 +229,9 @@ class LayerSettingsPanel extends ConsumerWidget {
     double value,
     double min,
     double max,
-    Function(double) onChanged,
-  ) {
+    Function(double) onChanged, {
+    bool displayPercent = false,
+  }) {
     return Column(
       crossAxisAlignment: CrossAxisAlignment.start,
       children: [
@@ -229,7 +239,7 @@ class LayerSettingsPanel extends ConsumerWidget {
           mainAxisAlignment: MainAxisAlignment.spaceBetween,
           children: [
             Text(label),
-            Text(value.toStringAsFixed(3)),
+            Text(displayPercent ? '${(value * 100).round()}%' : value.toStringAsFixed(3)),
           ],
         ),
         Slider(
