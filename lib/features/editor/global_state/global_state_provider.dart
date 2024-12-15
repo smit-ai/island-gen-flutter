@@ -40,7 +40,7 @@ class GlobalState extends _$GlobalState {
     final activeLayerStack = <Layer>[];
 
     if (_isolatedLayerIds.isEmpty) {
-      activeLayerStack.addAll(layerStack);
+      activeLayerStack.addAll(layerStack.where((layer) => layer.visible));
     } else {
       for (final layerId in _isolatedLayerIds) {
         final layer = layerStack.firstWhereOrNull((layer) => layer.id == layerId);
@@ -82,6 +82,7 @@ class GlobalState extends _$GlobalState {
 
   void removeLayer(String id) {
     _layerIds.remove(id);
+    _isolatedLayerIds.remove(id);
     ref.invalidateSelf();
   }
 }

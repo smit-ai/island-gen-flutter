@@ -19,51 +19,91 @@ class LayersPanelLayer extends ConsumerWidget {
     final hasIsolatedLayers = ref.watch(globalStateProvider.select((value) => value.isolatedLayerIds.isNotEmpty));
 
     return Padding(
-      padding: const EdgeInsets.symmetric(vertical: 4),
-      child: OutlinedButton(
-        onPressed: () => ref.read(globalStateProvider.notifier).selectLayer(layerId),
-        style: OutlinedButton.styleFrom(
-          padding: const EdgeInsets.symmetric(vertical: 16, horizontal: 12),
-          backgroundColor: isSelected ? Colors.blue.withOpacity(0.1) : null,
-          side: BorderSide(
-            color: isSelected ? Colors.blue : Colors.grey,
-          ),
-          shape: RoundedRectangleBorder(
-            borderRadius: BorderRadius.circular(8),
-          ),
-        ),
-        child: Row(
-          children: [
-            Icon(
-              Icons.layers,
-              size: 16,
-              color: isSelected ? Colors.blue : Colors.grey,
-            ),
-            const SizedBox(width: 8),
-            Expanded(
-              child: Text(
-                layer.name,
-                style: TextStyle(
-                  color: isSelected ? Colors.blue : Colors.grey,
+      padding: const EdgeInsets.symmetric(vertical: 3),
+      child: Material(
+        color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        child: InkWell(
+          onTap: () => ref.read(globalStateProvider.notifier).selectLayer(layerId),
+          child: Container(
+            height: 36,
+            padding: const EdgeInsets.symmetric(horizontal: 8),
+            child: Row(
+              children: [
+                // Visibility toggle
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: _SmallIconButton(
+                    icon: layer.visible ? Icons.visibility : Icons.visibility_off,
+                    color: layer.visible ? Colors.grey.shade700 : Colors.red.shade300,
+                    onPressed: () => ref.read(layerControllerProvider(layerId).notifier).toggleVisibility(),
+                  ),
                 ),
-                overflow: TextOverflow.ellipsis,
-              ),
+                const SizedBox(width: 4),
+                // Isolate button
+                Container(
+                  decoration: BoxDecoration(
+                    color: Colors.black.withOpacity(0.1),
+                    borderRadius: BorderRadius.circular(4),
+                  ),
+                  child: _SmallIconButton(
+                    icon: isIsolated ? Icons.filter_alt : (hasIsolatedLayers ? Icons.filter_alt_off : Icons.filter_alt_outlined),
+                    color: isIsolated ? Colors.blue : Colors.grey.shade700,
+                    onPressed: () => ref.read(globalStateProvider.notifier).toggleIsolateLayer(layerId),
+                  ),
+                ),
+                const SizedBox(width: 8),
+                // Layer name
+                Expanded(
+                  child: Text(
+                    layer.name,
+                    style: TextStyle(
+                      fontSize: 14,
+                      color: isSelected ? Colors.blue : Colors.grey.shade700,
+                      fontWeight: isSelected ? FontWeight.w500 : FontWeight.normal,
+                    ),
+                    overflow: TextOverflow.ellipsis,
+                  ),
+                ),
+                // Delete button
+                _SmallIconButton(
+                  icon: Icons.close,
+                  color: Colors.grey.shade700,
+                  onPressed: () => ref.read(globalStateProvider.notifier).removeLayer(layerId),
+                ),
+              ],
             ),
-            const SizedBox(width: 8),
-            // Isolation toggle
-            IconButton(
-              onPressed: () => ref.read(globalStateProvider.notifier).toggleIsolateLayer(layerId),
-              icon: Icon(
-                isIsolated ? Icons.visibility : (hasIsolatedLayers ? Icons.visibility_off : Icons.visibility),
-                size: 16,
-              ),
-              color: isIsolated ? Colors.blue : (hasIsolatedLayers ? Colors.red : Colors.grey),
-              tooltip: isIsolated ? 'Remove from isolation' : (hasIsolatedLayers ? 'Add to isolation' : 'Isolate layer'),
-              padding: EdgeInsets.zero,
-              constraints: const BoxConstraints(),
-            ),
-          ],
+          ),
         ),
+      ),
+    );
+  }
+}
+
+class _SmallIconButton extends StatelessWidget {
+  final IconData icon;
+  final Color color;
+  final VoidCallback onPressed;
+
+  const _SmallIconButton({
+    required this.icon,
+    required this.color,
+    required this.onPressed,
+  });
+
+  @override
+  Widget build(BuildContext context) {
+    return SizedBox(
+      width: 24,
+      height: 24,
+      child: IconButton(
+        onPressed: onPressed,
+        icon: Icon(icon, size: 16),
+        color: color,
+        padding: EdgeInsets.zero,
+        splashRadius: 14,
       ),
     );
   }

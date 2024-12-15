@@ -25,6 +25,10 @@ class LayerController extends _$LayerController {
     ref.invalidateSelf();
   }
 
+  void toggleVisibility() {
+    state = state.copyWith(visible: !state.visible);
+  }
+
   void generateHeightmap() async {
     final globalSettings = ref.read(globalSettingsProvider);
     final resolution = globalSettings.resolution;
