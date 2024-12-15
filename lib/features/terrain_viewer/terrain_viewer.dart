@@ -3,6 +3,7 @@ import 'package:flutter/gestures.dart';
 import 'dart:ui' as ui;
 import 'package:flutter_riverpod/flutter_riverpod.dart';
 import 'package:island_gen_flutter/features/editor/providers/heightmap_provider/heightmap_provider.dart';
+import 'package:island_gen_flutter/features/editor/providers/terrain_settings_provider/terrain_settings_provider.dart';
 import 'package:island_gen_flutter/features/terrain_viewer/orbit_camera.dart';
 import 'package:island_gen_flutter/features/terrain_viewer/terrain_mesh.dart';
 import 'package:island_gen_flutter/features/terrain_viewer/terrain_painter.dart';
@@ -24,24 +25,21 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
   void initState() {
     final heightmap = ref.read(heightmapDataProvider);
     if (heightmap.hasValue) {
-      _initializeTerrain(heightmap.requireValue);
+      _rebuildTerrain(heightmap.requireValue);
     }
     super.initState();
   }
 
-  Future<void> _initializeTerrain(ui.Image heightmap) async {
-    print('initializeTerrain');
+  Future<void> _rebuildTerrain(ui.Image heightmap) async {
     try {
-      setState(() {
-        _isLoading = true;
-      });
+      final settings = ref.read(terrainSettingsProvider);
 
       final mesh = await TerrainMesh.create(
         heightmap: heightmap,
-        width: 10.0,
-        height: 2.0,
-        depth: 10.0,
-        resolution: 200,
+        width: settings.width,
+        height: settings.height,
+        depth: settings.depth,
+        resolution: settings.gridResolution,
       );
 
       setState(() {
@@ -91,11 +89,23 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
 
   @override
   Widget build(BuildContext context) {
+    // Listen to heightmap changes
     ref.listen(heightmapDataProvider, (previous, next) {
-      if (next.hasValue) {
-        _initializeTerrain(next.requireValue);
+      if (next.hasValue && next != previous) {
+        _rebuildTerrain(next.requireValue);
       }
     });
+
+    // Listen to terrain settings changes
+    ref.listen(terrainSettingsProvider, (previous, next) {
+      if (previous != null && next != previous && next.autoRebuild && _terrainMesh != null) {
+        final heightmap = ref.read(heightmapDataProvider);
+        if (heightmap.hasValue) {
+          _rebuildTerrain(heightmap.requireValue);
+        }
+      }
+    });
+
     if (_isLoading) {
       return const Center(
         child: CircularProgressIndicator(),
