@@ -6,8 +6,13 @@ import 'package:vector_math/vector_math.dart';
 class TerrainMesh {
   final Float32List vertices;
   final Uint16List indices;
+  final Uint16List lineIndices;
 
-  TerrainMesh({required this.vertices, required this.indices});
+  TerrainMesh({
+    required this.vertices,
+    required this.indices,
+    required this.lineIndices,
+  });
 
   static Future<TerrainMesh> create({
     required ui.Image heightmap,
@@ -55,7 +60,7 @@ class TerrainMesh {
       }
     }
 
-    // Create indices for triangles
+    // Create triangle indices
     final indices = Uint16List((gridX - 1) * (gridZ - 1) * 6);
     int iIndex = 0;
 
@@ -78,7 +83,35 @@ class TerrainMesh {
       }
     }
 
-    return TerrainMesh(vertices: vertices, indices: indices);
+    // Create line indices for wireframe
+    final lineIndices = Uint16List((gridX - 1) * gridZ * 2 + gridX * (gridZ - 1) * 2);
+    int lIndex = 0;
+
+    // Horizontal lines
+    for (int z = 0; z < gridZ; z++) {
+      for (int x = 0; x < gridX - 1; x++) {
+        final start = z * gridX + x;
+        final end = start + 1;
+        lineIndices[lIndex++] = start;
+        lineIndices[lIndex++] = end;
+      }
+    }
+
+    // Vertical lines
+    for (int x = 0; x < gridX; x++) {
+      for (int z = 0; z < gridZ - 1; z++) {
+        final start = z * gridX + x;
+        final end = start + gridX;
+        lineIndices[lIndex++] = start;
+        lineIndices[lIndex++] = end;
+      }
+    }
+
+    return TerrainMesh(
+      vertices: vertices,
+      indices: indices,
+      lineIndices: lineIndices,
+    );
   }
 
   static Vector3 _calculateNormal(

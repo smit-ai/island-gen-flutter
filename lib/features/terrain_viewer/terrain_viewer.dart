@@ -127,6 +127,7 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
           painter: TerrainPainter(
             terrainMesh: _terrainMesh!,
             camera: camera,
+            renderMode: ref.watch(terrainSettingsProvider).renderMode,
           ),
           size: Size.infinite,
         ),
