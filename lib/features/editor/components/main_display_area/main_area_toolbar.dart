@@ -82,23 +82,23 @@ class MainAreaToolbar extends ConsumerWidget {
                   }
                 },
                 style: ButtonStyle(
-                  backgroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected)) {
+                  backgroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
                         return Colors.blue;
                       }
                       return Colors.grey[100];
                     },
                   ),
-                  foregroundColor: MaterialStateProperty.resolveWith<Color?>(
-                    (Set<MaterialState> states) {
-                      if (states.contains(MaterialState.selected)) {
+                  foregroundColor: WidgetStateProperty.resolveWith<Color?>(
+                    (Set<WidgetState> states) {
+                      if (states.contains(WidgetState.selected)) {
                         return Colors.white;
                       }
                       return Colors.grey[800];
                     },
                   ),
-                  side: MaterialStateProperty.all(
+                  side: WidgetStateProperty.all(
                     BorderSide(color: Colors.grey[300]!),
                   ),
                 ),

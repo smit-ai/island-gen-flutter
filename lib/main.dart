@@ -3,7 +3,7 @@ import 'dart:math' as math;
 
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'features/editor/editor_main_page.dart';
+import 'package:island_gen_flutter/features/editor/editor_main_page.dart';
 
 void main() {
   runApp(

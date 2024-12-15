@@ -1,6 +1,6 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import '../../providers/global_settings_provider/global_settings_state_provider.dart';
+import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 
 class GlobalSettingsPanel extends ConsumerWidget {
   const GlobalSettingsPanel({super.key});

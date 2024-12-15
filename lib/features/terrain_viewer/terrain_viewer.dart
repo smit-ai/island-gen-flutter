@@ -31,6 +31,7 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
   }
 
   Future<void> _rebuildTerrain(ui.Image heightmap) async {
+    //debugPrint('rebuildTerrain');
     try {
       final settings = ref.read(terrainSettingsProvider);
 
@@ -96,6 +97,15 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
       }
     });
 
+    ref.listen(terrainSettingsProvider, (previous, next) {
+      if (previous != null && next != previous && next.autoRebuild && _terrainMesh != null) {
+        final heightmap = ref.read(heightmapDataProvider);
+        if (heightmap.hasValue) {
+          _rebuildTerrain(heightmap.requireValue);
+        }
+      }
+    });
+
     // Listen to terrain settings changes
     ref.listen(terrainSettingsProvider, (previous, next) {
       if (previous != null && next != previous && next.autoRebuild && _terrainMesh != null) {
@@ -127,7 +137,7 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
           painter: TerrainPainter(
             terrainMesh: _terrainMesh!,
             camera: camera,
-            renderMode: ref.watch(terrainSettingsProvider).renderMode,
+            renderMode: ref.read(terrainSettingsProvider).renderMode,
           ),
           size: Size.infinite,
         ),

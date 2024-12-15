@@ -13,22 +13,16 @@ uniform Transforms {
 out vec4 frag_color;
 
 vec3 getTerrainColor(vec2 uv, float height) {
-    // Get grid size from uniform (passed in lightParams.z)
-    float gridSize = lightParams.z;
-    
-    // Convert UV from [0,1] range to world-space coordinates [-0.5, 0.5]
-    vec2 worldPos = (uv - 0.5) * 10.0; // 10.0 is the terrain width/depth
-    
-    // Create checker pattern using world-space coordinates and grid size
-    vec2 checker = floor(worldPos * (gridSize / 10.0)); // Scale by gridSize/10 to match world space
-    float pattern = mod(abs(checker.x) + abs(checker.y), 2.0);
-    
-    // Define colors for the checkerboard
-    vec3 color1 = vec3(0.7, 0.7, 0.7); // Light gray
-    vec3 color2 = vec3(0.4, 0.4, 0.4); // Darker gray
-    
-    // Simple checkerboard pattern without height-based coloring
-    return mix(color1, color2, pattern);
+    // Height-based coloring using world-space height
+    if (height > 0.8) {
+        return vec3(1.0, 1.0, 1.0); // Snow
+    } else if (height > 0.3) {
+        return vec3(0.6, 0.6, 0.6); // Rock
+    } else if (height < -0.3) {
+        return vec3(0.0, 0.4, 0.8); // Water
+    } else {
+        return vec3(0.2, 0.7, 0.2); // Default terrain (green)
+    }
 }
 
 void main() {

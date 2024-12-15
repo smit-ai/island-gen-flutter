@@ -7,7 +7,7 @@ void main(List<String> args) async {
   print('Working directory: ${Directory.current}');
 
   await build(args, (config, output) async {
-    print('Building shaders with config: ${config}');
+    print('Building shaders with config: $config');
     await buildShaderBundleJson(buildConfig: config, buildOutput: output, manifestFileName: 'my_renderer.shaderbundle.json');
     print('Shader bundle build complete');
   });

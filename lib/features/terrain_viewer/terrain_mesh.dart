@@ -7,11 +7,13 @@ class TerrainMesh {
   final Float32List vertices;
   final Uint16List indices;
   final Uint16List lineIndices;
+  final int gridSize;
 
   TerrainMesh({
     required this.vertices,
     required this.indices,
     required this.lineIndices,
+    required this.gridSize,
   });
 
   static Future<TerrainMesh> create({
@@ -111,6 +113,7 @@ class TerrainMesh {
       vertices: vertices,
       indices: indices,
       lineIndices: lineIndices,
+      gridSize: resolution,
     );
   }
 

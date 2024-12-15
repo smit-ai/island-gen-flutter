@@ -17,19 +17,12 @@ gpu.ShaderLibrary get shaderLibrary {
       throw Exception('ShaderLibrary.fromAsset returned null');
     }
 
-    // Verify shaders are present
-    final terrainVert = _shaderLibrary!['TerrainVertex'];
-    final terrainFrag = _shaderLibrary!['TerrainFragment'];
-    final noiseVert = _shaderLibrary!['NoiseVertex'];
-    final noiseFrag = _shaderLibrary!['NoiseFragment'];
-    final blendFrag = _shaderLibrary!['BlendFragment'];
-
     debugPrint('Shader availability:');
-    debugPrint('TerrainVertex: ${terrainVert != null}');
-    debugPrint('TerrainFragment: ${terrainFrag != null}');
-    debugPrint('NoiseVertex: ${noiseVert != null}');
-    debugPrint('NoiseFragment: ${noiseFrag != null}');
-    debugPrint('BlendFragment: ${blendFrag != null}');
+    for (final shaderName in _shaderLibrary!.shaders_.keys) {
+      final shader = _shaderLibrary![shaderName];
+      debugPrint('$shaderName: ${shader != null}');
+    }
+
     debugPrint('Successfully loaded shader bundle');
     return _shaderLibrary!;
   } catch (e) {

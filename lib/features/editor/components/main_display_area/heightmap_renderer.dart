@@ -7,10 +7,10 @@ class HeightmapRenderer extends StatefulWidget {
   final Size resolution;
 
   const HeightmapRenderer({
-    Key? key,
+    super.key,
     required this.heightmap,
     required this.resolution,
-  }) : super(key: key);
+  });
 
   @override
   State<HeightmapRenderer> createState() => _HeightmapRendererState();

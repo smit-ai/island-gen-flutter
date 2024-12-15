@@ -1,9 +1,9 @@
 import 'package:flutter/material.dart';
 import 'package:flutter_riverpod/flutter_riverpod.dart';
-import 'components/global_settings_panel/global_settings_panel.dart';
-import 'components/layers_panel/layers_panel.dart';
-import 'components/layer_settings_panel/layer_settings_panel.dart';
-import 'components/main_display_area/main_display_area.dart';
+import 'package:island_gen_flutter/features/editor/components/global_settings_panel/global_settings_panel.dart';
+import 'package:island_gen_flutter/features/editor/components/layers_panel/layers_panel.dart';
+import 'package:island_gen_flutter/features/editor/components/layer_settings_panel/layer_settings_panel.dart';
+import 'package:island_gen_flutter/features/editor/components/main_display_area/main_display_area.dart';
 
 class EditorMainPage extends ConsumerWidget {
   const EditorMainPage({super.key});

@@ -7,6 +7,14 @@
         "type": "fragment",
         "file": "shaders/terrain.frag"
     },
+    "ColorFragment": {
+        "type": "fragment",
+        "file": "shaders/color.frag"
+    },
+    "WireframeFragment": {
+        "type": "fragment",
+        "file": "shaders/wireframe.frag"
+    },
     "NoiseVertex": {
         "type": "vertex",
         "file": "shaders/noise.vert"
