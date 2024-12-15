@@ -86,8 +86,8 @@ class LayerSettingsPanel extends ConsumerWidget {
                             _buildSlider(
                               'Frequency',
                               layer.noise.frequency,
-                              0.001,
-                              0.3,
+                              0.1,
+                              10.0,
                               (value) => controller.updateNoiseParams(layer.noise.copyWith(frequency: value)),
                             ),
                             _buildIntSlider(

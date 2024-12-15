@@ -7,14 +7,13 @@ import 'package:island_gen_flutter/shaders.dart';
 import 'package:island_gen_flutter/features/heightmap_generator/extentions.dart';
 
 class HeightmapGenerator {
-  static const int DEFAULT_SIZE = 512;
-
   static Future<ui.Image> noise(
     int width,
     int height, {
     double scale = 1.0,
     int octaves = 4,
     double persistence = 0.5,
+    double frequency = 1.0,
     int seed = 0,
   }) async {
     // Create vertex buffer for quad
@@ -40,11 +39,12 @@ class HeightmapGenerator {
     )!;
 
     // Create uniform buffer for noise parameters
-    final uniformData = Float32List(4);
+    final uniformData = Float32List(5);
     uniformData[0] = scale;
     uniformData[1] = octaves.toDouble();
     uniformData[2] = persistence;
     uniformData[3] = seed.toDouble();
+    uniformData[4] = frequency;
 
     final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),
@@ -112,7 +112,7 @@ class HeightmapGenerator {
     return texture.asImage();
   }
 
-  static Future<ui.Image> blendLayerStack(List<Layer> layers) async {
+  static Future<ui.Image> blendLayerStack(List<Layer> layers, int width, int height) async {
     if (layers.isEmpty) {
       throw Exception('Layer stack is empty');
     }
@@ -127,10 +127,10 @@ class HeightmapGenerator {
     // Create vertex buffer for quad
     final vertices = Float32List.fromList([
       // pos(xy), uv
-      -1.0, -1.0, 0.0, 0.0, // Bottom left
-      1.0, -1.0, 1.0, 0.0, // Bottom right
-      -1.0, 1.0, 0.0, 1.0, // Top left
-      1.0, 1.0, 1.0, 1.0, // Top right
+      -1.0, -1.0, 0.0, 1.0, // Bottom left
+      1.0, -1.0, 1.0, 1.0, // Bottom right
+      -1.0, 1.0, 0.0, 0.0, // Top left
+      1.0, 1.0, 1.0, 0.0, // Top right
     ]);
 
     final indices = Uint16List.fromList([
@@ -179,8 +179,8 @@ class HeightmapGenerator {
         gpu.ColorAttachment(
           texture: gpu.gpuContext.createTexture(
             gpu.StorageMode.devicePrivate,
-            DEFAULT_SIZE,
-            DEFAULT_SIZE,
+            width,
+            height,
             format: gpu.PixelFormat.r8g8b8a8UNormInt,
             enableShaderReadUsage: true,
           )!,

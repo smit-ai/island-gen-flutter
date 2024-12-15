@@ -5,6 +5,7 @@ uniform NoiseParams {
     float octaves;
     float persistence;
     float seed;
+    float frequency;
 };
 
 out vec4 frag_color;
@@ -32,16 +33,16 @@ float valueNoise(vec2 p) {
 float fbm(vec2 p) {
     float value = 0.0;
     float amplitude = 1.0;
-    float frequency = 1.0;
+    float freq = frequency;
     float total_amplitude = 0.0;
     
     int num_octaves = int(octaves);
     
     for (int i = 0; i < num_octaves; i++) {
-        value += amplitude * valueNoise(p * frequency + seed);
+        value += amplitude * valueNoise(p * freq + seed);
         total_amplitude += amplitude;
         amplitude *= persistence;
-        frequency *= 2.0;
+        freq *= 2.0;
     }
     
     return value / total_amplitude;

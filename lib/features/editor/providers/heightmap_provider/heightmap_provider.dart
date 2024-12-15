@@ -1,5 +1,6 @@
 import 'dart:ui' as ui;
 import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
+import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_generator/heightmap_generator.dart';
 import 'package:island_gen_flutter/models/layer.dart';
 import 'package:riverpod_annotation/riverpod_annotation.dart';
@@ -24,7 +25,8 @@ class HeightmapData extends _$HeightmapData {
   }
 
   void processLayerStack(List<Layer> layerStack) async {
-    final heightmap = await HeightmapGenerator.blendLayerStack(layerStack);
+    final resolution = ref.read(globalSettingsProvider).resolution;
+    final heightmap = await HeightmapGenerator.blendLayerStack(layerStack, resolution.width, resolution.height);
     state = AsyncData(heightmap);
   }
 }

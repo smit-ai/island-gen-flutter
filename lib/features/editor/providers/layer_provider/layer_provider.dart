@@ -1,4 +1,3 @@
-import 'dart:async';
 import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_generator/heightmap_generator.dart';
 import 'package:island_gen_flutter/models/layer.dart';
@@ -8,8 +7,6 @@ part 'package:island_gen_flutter/generated/features/editor/providers/layer_provi
 
 @Riverpod(keepAlive: true)
 class LayerController extends _$LayerController {
-  Timer? _debounceTimer;
-
   @override
   Layer build(String layerId) {
     print('LayerController build: $layerId');
@@ -25,7 +22,6 @@ class LayerController extends _$LayerController {
   }
 
   void destroy() {
-    _debounceTimer?.cancel();
     ref.invalidateSelf();
   }
 
@@ -38,6 +34,7 @@ class LayerController extends _$LayerController {
       scale: state.noise.scale,
       octaves: state.noise.octaves,
       persistence: state.noise.persistence,
+      frequency: state.noise.frequency,
       seed: state.noise.seed,
     );
     state = state.copyWith(cachedData: heightmap);
