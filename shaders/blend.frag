@@ -4,14 +4,14 @@ uniform sampler2D baseTexture;   // Base heightmap
 uniform sampler2D blendTexture;  // Layer to blend
 
 uniform BlendParams {
-    float blendMode;  // 0=Add, 1=Subtract, 2=Min, 3=Max
+    float blendMode;  // 0=Min, 1=Max, 2=Add, 3=Subtract
     float opacity;
 };
 
 out vec4 frag_color;
 
 float blendAdd(float base, float blend) {
-    return min(base + blend, 1.0);
+    return clamp(base + blend, 0.0, 1.0);  // Direct addition with clamping to valid range
 }
 
 float blendSubtract(float base, float blend) {
@@ -38,17 +38,17 @@ void main() {
     // Apply blend mode
     int mode = int(blendMode);
     switch(mode) {
-        case 0:  // Add
-            result = blendAdd(baseHeight, blendHeight);
-            break;
-        case 1:  // Subtract
-            result = blendSubtract(baseHeight, blendHeight);
-            break;
-        case 2:  // Min
+        case 0:  // Min
             result = blendMin(baseHeight, blendHeight);
             break;
-        case 3:  // Max
+        case 1:  // Max
             result = blendMax(baseHeight, blendHeight);
+            break;
+        case 2:  // Add
+            result = blendAdd(baseHeight, blendHeight);
+            break;
+        case 3:  // Subtract
+            result = blendSubtract(baseHeight, blendHeight);
             break;
         default:  // Fallback to Add
             result = blendAdd(baseHeight, blendHeight);
