@@ -68,6 +68,7 @@ class TerrainPainter extends CustomPainter {
     required Vector3 lightColor,
     required double ambientStrength,
     required double specularStrength,
+    required bool isWireframe,
   }) {
     final uniformData = Float32List(16 + 16 + 4 + 4 + 4);
     int offset = 0;
@@ -97,7 +98,9 @@ class TerrainPainter extends CustomPainter {
     uniformData[offset++] = ambientStrength;
     uniformData[offset++] = specularStrength;
     uniformData[offset++] = terrainMesh.gridSize.toDouble();
-    uniformData[offset++] = 0.0;
+    final modeFlag = isWireframe ? 1.0 : 0.0;
+    //print('Creating uniform buffer with isWireframe: $isWireframe, modeFlag: $modeFlag');
+    uniformData[offset++] = modeFlag;
 
     return gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),
@@ -154,18 +157,20 @@ class TerrainPainter extends CustomPainter {
     // Create common resources
     final (verticesBuffer, indexBuffer, lineIndexBuffer) = _createBuffers();
     final transforms = _createTransforms(size);
-    final uniformBuffer = _createUniformBuffer(
-      mvp: transforms.mvp,
-      modelView: transforms.modelView,
-      cameraPosition: transforms.cameraPosition,
-      lightColor: Vector3(1.0, 1.0, 1.0),
-      ambientStrength: 0.3,
-      specularStrength: 0.7,
-    );
 
     switch (renderMode) {
       case RenderMode.wireframe:
         {
+          final uniformBuffer = _createUniformBuffer(
+            mvp: transforms.mvp,
+            modelView: transforms.modelView,
+            cameraPosition: transforms.cameraPosition,
+            lightColor: Vector3(1.0, 1.0, 1.0),
+            ambientStrength: 0.3,
+            specularStrength: 0.7,
+            isWireframe: true,
+          );
+
           // Get shaders and create pipeline
           final vert = shaderLibrary['TerrainVertex']!;
           final frag = shaderLibrary['WireframeFragment']!;
@@ -185,9 +190,18 @@ class TerrainPainter extends CustomPainter {
             terrainMesh.vertices.length ~/ 8,
           );
 
-          // Bind uniforms (only to vertex shader for wireframe)
+          // Bind uniforms to both vertex and fragment shaders
           renderPass.bindUniform(
             vert.getUniformSlot('Transforms'),
+            gpu.BufferView(
+              uniformBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: uniformBuffer.sizeInBytes,
+            ),
+          );
+
+          renderPass.bindUniform(
+            frag.getUniformSlot('Transforms'),
             gpu.BufferView(
               uniformBuffer,
               offsetInBytes: 0,
@@ -214,6 +228,27 @@ class TerrainPainter extends CustomPainter {
 
       case RenderMode.solid:
         {
+          // Create separate uniform buffers for terrain and wireframe
+          final terrainUniformBuffer = _createUniformBuffer(
+            mvp: transforms.mvp,
+            modelView: transforms.modelView,
+            cameraPosition: transforms.cameraPosition,
+            lightColor: Vector3(1.0, 1.0, 1.0),
+            ambientStrength: 0.3,
+            specularStrength: 0.7,
+            isWireframe: false,
+          );
+
+          final wireframeUniformBuffer = _createUniformBuffer(
+            mvp: transforms.mvp,
+            modelView: transforms.modelView,
+            cameraPosition: transforms.cameraPosition,
+            lightColor: Vector3(1.0, 1.0, 1.0),
+            ambientStrength: 0.3,
+            specularStrength: 0.7,
+            isWireframe: false,
+          );
+
           // Get shaders and create pipeline
           final vert = shaderLibrary['TerrainVertex']!;
           final frag = shaderLibrary['TerrainFragment']!;
@@ -235,22 +270,22 @@ class TerrainPainter extends CustomPainter {
             terrainMesh.vertices.length ~/ 8,
           );
 
-          // Bind uniforms
+          // Bind uniforms with terrain buffer
           renderPass.bindUniform(
             vert.getUniformSlot('Transforms'),
             gpu.BufferView(
-              uniformBuffer,
+              terrainUniformBuffer,
               offsetInBytes: 0,
-              lengthInBytes: uniformBuffer.sizeInBytes,
+              lengthInBytes: terrainUniformBuffer.sizeInBytes,
             ),
           );
 
           renderPass.bindUniform(
             frag.getUniformSlot('Transforms'),
             gpu.BufferView(
-              uniformBuffer,
+              terrainUniformBuffer,
               offsetInBytes: 0,
-              lengthInBytes: uniformBuffer.sizeInBytes,
+              lengthInBytes: terrainUniformBuffer.sizeInBytes,
             ),
           );
 
@@ -287,13 +322,22 @@ class TerrainPainter extends CustomPainter {
             ),
           );
 
-          // Bind uniforms for wireframe
+          // Bind uniforms with wireframe buffer
           renderPass.bindUniform(
             vert.getUniformSlot('Transforms'),
             gpu.BufferView(
-              uniformBuffer,
+              wireframeUniformBuffer,
               offsetInBytes: 0,
-              lengthInBytes: uniformBuffer.sizeInBytes,
+              lengthInBytes: wireframeUniformBuffer.sizeInBytes,
+            ),
+          );
+
+          renderPass.bindUniform(
+            frag.getUniformSlot('Transforms'),
+            gpu.BufferView(
+              wireframeUniformBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: wireframeUniformBuffer.sizeInBytes,
             ),
           );
 
@@ -316,6 +360,16 @@ class TerrainPainter extends CustomPainter {
 
       case RenderMode.color:
         {
+          final uniformBuffer = _createUniformBuffer(
+            mvp: transforms.mvp,
+            modelView: transforms.modelView,
+            cameraPosition: transforms.cameraPosition,
+            lightColor: Vector3(1.0, 1.0, 1.0),
+            ambientStrength: 0.3,
+            specularStrength: 0.7,
+            isWireframe: false,
+          );
+
           // Get shaders and create pipeline
           final vert = shaderLibrary['TerrainVertex']!;
           final frag = shaderLibrary['ColorFragment']!;
