@@ -52,8 +52,12 @@ float fbm(vec2 p) {
     int num_octaves = int(octaves);
     
     // Apply rotation and offset to the base coordinates
-    p = rotate2D(p, rotation * 6.28318530718); // Convert rotation to radians (0-1 to 0-2π)
-    p += vec2(offsetX, offsetY);
+    // Convert degrees (0-360) to radians (0-2π)
+    float rotationRadians = rotation * 3.14159265359 / 180.0;
+    p = rotate2D(p, rotationRadians);
+    
+    // Scale offsets to be less sensitive (divide by 10 to make movement more gradual)
+    p += vec2(offsetX, offsetY) * 0.1;
     
     for (int i = 0; i < num_octaves; i++) {
         value += amplitude * valueNoise(p * octaveFreq * baseFrequency + seed);
