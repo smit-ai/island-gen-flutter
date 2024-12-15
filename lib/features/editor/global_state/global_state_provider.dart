@@ -76,6 +76,7 @@ class GlobalState extends _$GlobalState {
   void addLayer() {
     final layerId = Uuid().v4();
     _layerIds.add(layerId);
+    _selectedLayerId = layerId;
     ref.invalidateSelf();
   }
 

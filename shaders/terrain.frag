@@ -16,12 +16,10 @@ vec3 getTerrainColor(vec2 uv, float height) {
     // Get grid size from uniform (passed in lightParams.z)
     float gridSize = lightParams.z;
     
-    // Convert UV from [0,1] range to world-space coordinates [-0.5, 0.5]
-    vec2 worldPos = (uv - 0.5) * 10.0; // 10.0 is the terrain width/depth
-    
-    // Create checker pattern using world-space coordinates and grid size
-    vec2 checker = floor(worldPos * (gridSize / 10.0)); // Scale by gridSize/10 to match world space
-    float pattern = mod(abs(checker.x) + abs(checker.y), 2.0);
+    // Transform UVs to world grid coordinates
+    vec2 worldGrid = uv * (gridSize - 1.0);
+    vec2 checker = floor(worldGrid);
+    float pattern = mod(checker.x + checker.y, 2.0);
     
     // Define colors for the checkerboard
     vec3 color1 = vec3(0.7, 0.7, 0.7); // Light gray

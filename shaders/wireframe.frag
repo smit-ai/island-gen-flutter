@@ -13,6 +13,6 @@ uniform Transforms {
 out vec4 frag_color;
 
 void main() {
-    // Output solid blue color for wireframe lines
-    frag_color = vec4(0.0, 0.0, 1.0, 1.0);
+    // Output semi-transparent dark blue color for wireframe lines
+    frag_color = vec4(0.0, 0.0, 0.4, 0.5);
 } 
