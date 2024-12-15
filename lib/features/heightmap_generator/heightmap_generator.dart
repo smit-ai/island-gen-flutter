@@ -15,6 +15,12 @@ class HeightmapGenerator {
     double persistence = 0.5,
     double frequency = 1.0,
     int seed = 0,
+    double offsetX = 0.0,
+    double offsetY = 0.0,
+    double rotation = 0.0,
+    bool invert = false,
+    double clampMin = 0.0,
+    double clampMax = 1.0,
   }) async {
     // Create vertex buffer for quad
     final vertices = Float32List.fromList([
@@ -39,12 +45,18 @@ class HeightmapGenerator {
     )!;
 
     // Create uniform buffer for noise parameters
-    final uniformData = Float32List(5);
+    final uniformData = Float32List(11);
     uniformData[0] = scale;
     uniformData[1] = octaves.toDouble();
     uniformData[2] = persistence;
     uniformData[3] = seed.toDouble();
     uniformData[4] = frequency;
+    uniformData[5] = offsetX;
+    uniformData[6] = offsetY;
+    uniformData[7] = rotation;
+    uniformData[8] = invert ? 1.0 : 0.0;
+    uniformData[9] = clampMin;
+    uniformData[10] = clampMax;
 
     final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),

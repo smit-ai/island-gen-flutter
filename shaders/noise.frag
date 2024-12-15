@@ -6,6 +6,12 @@ uniform NoiseParams {
     float persistence;
     float seed;
     float baseFrequency;
+    float offsetX;
+    float offsetY;
+    float rotation;
+    float invert;  // 0 = normal, 1 = inverted
+    float clampMin;
+    float clampMax;
 };
 
 out vec4 frag_color;
@@ -27,7 +33,14 @@ float valueNoise(vec2 p) {
     
     vec2 u = f * f * (3.0 - 2.0 * f);
     return mix(mix(a, b, u.x),
-              mix(c, d, u.x), u.y);
+             mix(c, d, u.x), u.y);
+}
+
+vec2 rotate2D(vec2 p, float angle) {
+    float s = sin(angle);
+    float c = cos(angle);
+    mat2 rotationMatrix = mat2(c, -s, s, c);
+    return rotationMatrix * p;
 }
 
 float fbm(vec2 p) {
@@ -38,6 +51,10 @@ float fbm(vec2 p) {
     
     int num_octaves = int(octaves);
     
+    // Apply rotation and offset to the base coordinates
+    p = rotate2D(p, rotation * 6.28318530718); // Convert rotation to radians (0-1 to 0-2π)
+    p += vec2(offsetX, offsetY);
+    
     for (int i = 0; i < num_octaves; i++) {
         value += amplitude * valueNoise(p * octaveFreq * baseFrequency + seed);
         total_amplitude += amplitude;
@@ -45,7 +62,23 @@ float fbm(vec2 p) {
         octaveFreq *= 2.0;
     }
     
-    return value / total_amplitude;
+    // Normalize and apply inversion if needed
+    float normalizedValue = value / total_amplitude;
+    if (invert > 0.5) {
+        normalizedValue = 1.0 - normalizedValue;
+    }
+    
+    // Apply clamping
+    if (normalizedValue < clampMin) {
+        normalizedValue = 0.0;
+    } else if (normalizedValue > clampMax) {
+        normalizedValue = 1.0;
+    } else {
+        // Remap the value between clampMin and clampMax to 0-1
+        normalizedValue = (normalizedValue - clampMin) / (clampMax - clampMin);
+    }
+    
+    return normalizedValue;
 }
 
 void main() {

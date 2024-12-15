@@ -40,6 +40,12 @@ class LayerController extends _$LayerController {
       persistence: state.noise.persistence,
       frequency: state.noise.frequency,
       seed: state.noise.seed,
+      offsetX: state.noise.offsetX,
+      offsetY: state.noise.offsetY,
+      rotation: state.noise.rotation,
+      invert: state.noise.invert,
+      clampMin: state.noise.clampMin,
+      clampMax: state.noise.clampMax,
     );
     state = state.copyWith(cachedData: heightmap);
   }

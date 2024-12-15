@@ -22,7 +22,7 @@ class LayerNoiseParams with _$LayerNoiseParams {
   const factory LayerNoiseParams({
     @Default(LayerNoiseType.perlin) LayerNoiseType type,
     @Default(1.0) double scale,
-    @Default(1.0) double frequency,
+    @Default(5.0) double frequency,
     @Default(4) int octaves,
     @Default(0.5) double persistence,
     @Default(2.0) double lacunarity,
