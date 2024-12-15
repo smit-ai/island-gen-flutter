@@ -360,7 +360,8 @@ class TerrainPainter extends CustomPainter {
 
       case RenderMode.color:
         {
-          final uniformBuffer = _createUniformBuffer(
+          // Create separate uniform buffers for terrain and wireframe
+          final terrainUniformBuffer = _createUniformBuffer(
             mvp: transforms.mvp,
             modelView: transforms.modelView,
             cameraPosition: transforms.cameraPosition,
@@ -370,15 +371,27 @@ class TerrainPainter extends CustomPainter {
             isWireframe: false,
           );
 
-          // Get shaders and create pipeline
+          final wireframeUniformBuffer = _createUniformBuffer(
+            mvp: transforms.mvp,
+            modelView: transforms.modelView,
+            cameraPosition: transforms.cameraPosition,
+            lightColor: Vector3(1.0, 1.0, 1.0),
+            ambientStrength: 0.3,
+            specularStrength: 0.7,
+            isWireframe: false,
+          );
+
+          // Get shaders and create pipelines
           final vert = shaderLibrary['TerrainVertex']!;
           final frag = shaderLibrary['ColorFragment']!;
           final pipeline = gpu.gpuContext.createRenderPipeline(vert, frag);
+          final wireFrag = shaderLibrary['WireframeFragment']!;
+          final wirePipeline = gpu.gpuContext.createRenderPipeline(vert, wireFrag);
 
           // Set up render pass
           final (commandBuffer, renderPass) = _setupRenderPass(renderTarget);
 
-          // Bind pipeline and buffers
+          // First draw: colored terrain
           renderPass.bindPipeline(pipeline);
           renderPass.bindVertexBuffer(
             gpu.BufferView(
@@ -389,22 +402,22 @@ class TerrainPainter extends CustomPainter {
             terrainMesh.vertices.length ~/ 8,
           );
 
-          // Bind uniforms
+          // Bind uniforms with terrain buffer
           renderPass.bindUniform(
             vert.getUniformSlot('Transforms'),
             gpu.BufferView(
-              uniformBuffer,
+              terrainUniformBuffer,
               offsetInBytes: 0,
-              lengthInBytes: uniformBuffer.sizeInBytes,
+              lengthInBytes: terrainUniformBuffer.sizeInBytes,
             ),
           );
 
           renderPass.bindUniform(
             frag.getUniformSlot('Transforms'),
             gpu.BufferView(
-              uniformBuffer,
+              terrainUniformBuffer,
               offsetInBytes: 0,
-              lengthInBytes: uniformBuffer.sizeInBytes,
+              lengthInBytes: terrainUniformBuffer.sizeInBytes,
             ),
           );
 
@@ -419,6 +432,58 @@ class TerrainPainter extends CustomPainter {
             terrainMesh.indices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.triangle);
+          renderPass.draw();
+
+          // Second draw: wireframe lines
+          renderPass.bindPipeline(wirePipeline);
+          renderPass.bindVertexBuffer(
+            gpu.BufferView(
+              verticesBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: verticesBuffer.sizeInBytes,
+            ),
+            terrainMesh.vertices.length ~/ 8,
+          );
+
+          // Enable alpha blending for wireframe
+          renderPass.setColorBlendEnable(true);
+          renderPass.setColorBlendEquation(
+            gpu.ColorBlendEquation(
+              sourceColorBlendFactor: gpu.BlendFactor.one,
+              destinationColorBlendFactor: gpu.BlendFactor.oneMinusSourceAlpha,
+            ),
+          );
+
+          // Bind uniforms with wireframe buffer
+          renderPass.bindUniform(
+            vert.getUniformSlot('Transforms'),
+            gpu.BufferView(
+              wireframeUniformBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: wireframeUniformBuffer.sizeInBytes,
+            ),
+          );
+
+          renderPass.bindUniform(
+            frag.getUniformSlot('Transforms'),
+            gpu.BufferView(
+              wireframeUniformBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: wireframeUniformBuffer.sizeInBytes,
+            ),
+          );
+
+          // Draw wireframe lines
+          renderPass.bindIndexBuffer(
+            gpu.BufferView(
+              lineIndexBuffer,
+              offsetInBytes: 0,
+              lengthInBytes: lineIndexBuffer.sizeInBytes,
+            ),
+            gpu.IndexType.int16,
+            terrainMesh.lineIndices.length,
+          );
+          renderPass.setPrimitiveType(gpu.PrimitiveType.line);
           renderPass.draw();
 
           commandBuffer.submit();
