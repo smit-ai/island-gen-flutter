@@ -6,7 +6,10 @@ part 'package:island_gen_flutter/generated/features/editor/providers/global_sett
 
 enum ViewMode {
   view2D,
-  view3D,
+  solid3D,
+  wireframe3D,
+  color3D,
+  raymarched3D,
 }
 
 @freezed

@@ -26,5 +26,13 @@
     "BlendFragment": {
         "type": "fragment",
         "file": "shaders/blend.frag"
+    },
+    "RaymarchVertex": {
+        "type": "vertex",
+        "file": "shaders/raymarch.vert"
+    },
+    "RaymarchFragment": {
+        "type": "fragment",
+        "file": "shaders/raymarch.frag"
     }
 }

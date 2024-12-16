@@ -16,8 +16,6 @@ final _privateConstructorUsedError = UnsupportedError(
 
 /// @nodoc
 mixin _$TerrainSettingsModel {
-  RenderMode get renderMode => throw _privateConstructorUsedError;
-
   /// Number of vertices along each axis (X and Z).
   /// A value of 100 creates a 100x100 grid (10,000 vertices, 19,602 triangles).
   /// Higher values give smoother terrain but impact performance.
@@ -44,8 +42,7 @@ abstract class $TerrainSettingsModelCopyWith<$Res> {
       _$TerrainSettingsModelCopyWithImpl<$Res, TerrainSettingsModel>;
   @useResult
   $Res call(
-      {RenderMode renderMode,
-      int gridResolution,
+      {int gridResolution,
       double width,
       double height,
       double depth,
@@ -68,7 +65,6 @@ class _$TerrainSettingsModelCopyWithImpl<$Res,
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? renderMode = null,
     Object? gridResolution = null,
     Object? width = null,
     Object? height = null,
@@ -76,10 +72,6 @@ class _$TerrainSettingsModelCopyWithImpl<$Res,
     Object? autoRebuild = null,
   }) {
     return _then(_value.copyWith(
-      renderMode: null == renderMode
-          ? _value.renderMode
-          : renderMode // ignore: cast_nullable_to_non_nullable
-              as RenderMode,
       gridResolution: null == gridResolution
           ? _value.gridResolution
           : gridResolution // ignore: cast_nullable_to_non_nullable
@@ -113,8 +105,7 @@ abstract class _$$TerrainSettingsModelImplCopyWith<$Res>
   @override
   @useResult
   $Res call(
-      {RenderMode renderMode,
-      int gridResolution,
+      {int gridResolution,
       double width,
       double height,
       double depth,
@@ -134,7 +125,6 @@ class __$$TerrainSettingsModelImplCopyWithImpl<$Res>
   @pragma('vm:prefer-inline')
   @override
   $Res call({
-    Object? renderMode = null,
     Object? gridResolution = null,
     Object? width = null,
     Object? height = null,
@@ -142,10 +132,6 @@ class __$$TerrainSettingsModelImplCopyWithImpl<$Res>
     Object? autoRebuild = null,
   }) {
     return _then(_$TerrainSettingsModelImpl(
-      renderMode: null == renderMode
-          ? _value.renderMode
-          : renderMode // ignore: cast_nullable_to_non_nullable
-              as RenderMode,
       gridResolution: null == gridResolution
           ? _value.gridResolution
           : gridResolution // ignore: cast_nullable_to_non_nullable
@@ -174,16 +160,11 @@ class __$$TerrainSettingsModelImplCopyWithImpl<$Res>
 
 class _$TerrainSettingsModelImpl implements _TerrainSettingsModel {
   const _$TerrainSettingsModelImpl(
-      {this.renderMode = RenderMode.solid,
-      this.gridResolution = 100,
+      {this.gridResolution = 100,
       this.width = 10.0,
       this.height = 2.0,
       this.depth = 10.0,
       this.autoRebuild = true});
-
-  @override
-  @JsonKey()
-  final RenderMode renderMode;
 
   /// Number of vertices along each axis (X and Z).
   /// A value of 100 creates a 100x100 grid (10,000 vertices, 19,602 triangles).
@@ -209,7 +190,7 @@ class _$TerrainSettingsModelImpl implements _TerrainSettingsModel {
 
   @override
   String toString() {
-    return 'TerrainSettingsModel(renderMode: $renderMode, gridResolution: $gridResolution, width: $width, height: $height, depth: $depth, autoRebuild: $autoRebuild)';
+    return 'TerrainSettingsModel(gridResolution: $gridResolution, width: $width, height: $height, depth: $depth, autoRebuild: $autoRebuild)';
   }
 
   @override
@@ -217,8 +198,6 @@ class _$TerrainSettingsModelImpl implements _TerrainSettingsModel {
     return identical(this, other) ||
         (other.runtimeType == runtimeType &&
             other is _$TerrainSettingsModelImpl &&
-            (identical(other.renderMode, renderMode) ||
-                other.renderMode == renderMode) &&
             (identical(other.gridResolution, gridResolution) ||
                 other.gridResolution == gridResolution) &&
             (identical(other.width, width) || other.width == width) &&
@@ -229,8 +208,8 @@ class _$TerrainSettingsModelImpl implements _TerrainSettingsModel {
   }
 
   @override
-  int get hashCode => Object.hash(runtimeType, renderMode, gridResolution,
-      width, height, depth, autoRebuild);
+  int get hashCode => Object.hash(
+      runtimeType, gridResolution, width, height, depth, autoRebuild);
 
   /// Create a copy of TerrainSettingsModel
   /// with the given fields replaced by the non-null parameter values.
@@ -245,15 +224,11 @@ class _$TerrainSettingsModelImpl implements _TerrainSettingsModel {
 
 abstract class _TerrainSettingsModel implements TerrainSettingsModel {
   const factory _TerrainSettingsModel(
-      {final RenderMode renderMode,
-      final int gridResolution,
+      {final int gridResolution,
       final double width,
       final double height,
       final double depth,
       final bool autoRebuild}) = _$TerrainSettingsModelImpl;
-
-  @override
-  RenderMode get renderMode;
 
   /// Number of vertices along each axis (X and Z).
   /// A value of 100 creates a 100x100 grid (10,000 vertices, 19,602 triangles).

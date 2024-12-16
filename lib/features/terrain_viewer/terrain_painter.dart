@@ -1,21 +1,21 @@
 import 'dart:typed_data';
 import 'package:flutter/material.dart' hide Matrix4;
 import 'package:flutter_gpu/gpu.dart' as gpu;
-import 'package:island_gen_flutter/features/editor/providers/terrain_settings_provider/terrain_settings_provider.dart';
-import 'package:island_gen_flutter/features/terrain_viewer/orbit_camera.dart';
+import 'package:island_gen_flutter/features/camera/camera_state_provider.dart';
+import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/shaders.dart';
 import 'package:vector_math/vector_math.dart';
 import 'package:island_gen_flutter/features/terrain_viewer/terrain_mesh.dart';
 
 class TerrainPainter extends CustomPainter {
   final TerrainMesh terrainMesh;
-  final OrbitCamera camera;
-  final RenderMode renderMode;
+  final CameraState cameraState;
+  final ViewMode viewMode;
 
   const TerrainPainter({
     required this.terrainMesh,
-    required this.camera,
-    required this.renderMode,
+    required this.cameraState,
+    required this.viewMode,
   });
 
   // Create vertex and index buffers
@@ -43,14 +43,12 @@ class TerrainPainter extends CustomPainter {
     double aspect,
   }) _createTransforms(Size size) {
     final aspect = size.width / size.height;
-    final projection = camera.getProjectionMatrix(aspect);
-    final view = camera.getViewMatrix();
+    final projection = cameraState.getProjectionMatrix(aspect);
+    final view = cameraState.getViewMatrix();
     final model = Matrix4.identity();
     final mvp = projection * view * model;
     final modelView = view * model;
-
-    final viewInverse = view.clone()..invert();
-    final cameraPosition = viewInverse.getTranslation();
+    final cameraPosition = cameraState.getCameraPosition();
 
     return (
       mvp: mvp,
@@ -158,8 +156,11 @@ class TerrainPainter extends CustomPainter {
     final (verticesBuffer, indexBuffer, lineIndexBuffer) = _createBuffers();
     final transforms = _createTransforms(size);
 
-    switch (renderMode) {
-      case RenderMode.wireframe:
+    switch (viewMode) {
+      case ViewMode.view2D:
+      case ViewMode.raymarched3D:
+        return;
+      case ViewMode.wireframe3D:
         {
           final uniformBuffer = _createUniformBuffer(
             mvp: transforms.mvp,
@@ -226,7 +227,7 @@ class TerrainPainter extends CustomPainter {
         }
         break;
 
-      case RenderMode.solid:
+      case ViewMode.solid3D:
         {
           // Create separate uniform buffers for terrain and wireframe
           final terrainUniformBuffer = _createUniformBuffer(
@@ -358,7 +359,7 @@ class TerrainPainter extends CustomPainter {
         }
         break;
 
-      case RenderMode.color:
+      case ViewMode.color3D:
         {
           // Create separate uniform buffers for terrain and wireframe
           final terrainUniformBuffer = _createUniformBuffer(

@@ -4,14 +4,10 @@ import 'package:riverpod_annotation/riverpod_annotation.dart';
 part 'package:island_gen_flutter/generated/features/editor/providers/terrain_settings_provider/terrain_settings_provider.freezed.dart';
 part 'package:island_gen_flutter/generated/features/editor/providers/terrain_settings_provider/terrain_settings_provider.g.dart';
 
-enum RenderMode { wireframe, solid, color }
-
 /// Settings model for the 3D terrain visualization
 @freezed
 class TerrainSettingsModel with _$TerrainSettingsModel {
   const factory TerrainSettingsModel({
-    @Default(RenderMode.solid) RenderMode renderMode,
-
     /// Number of vertices along each axis (X and Z).
     /// A value of 100 creates a 100x100 grid (10,000 vertices, 19,602 triangles).
     /// Higher values give smoother terrain but impact performance.
@@ -27,10 +23,6 @@ class TerrainSettingsModel with _$TerrainSettingsModel {
 class TerrainSettings extends _$TerrainSettings {
   @override
   TerrainSettingsModel build() => const TerrainSettingsModel();
-
-  void setRenderMode(RenderMode mode) {
-    state = state.copyWith(renderMode: mode);
-  }
 
   void setGridResolution(int resolution) {
     // Clamp between 10 (coarse) and 500 (very detailed) vertices per axis

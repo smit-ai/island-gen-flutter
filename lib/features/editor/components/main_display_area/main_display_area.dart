@@ -4,6 +4,7 @@ import 'package:island_gen_flutter/features/editor/components/main_display_area/
 import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
 import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_viewer/heightmap_viewer.dart';
+import 'package:island_gen_flutter/features/raymarched_terrain_viewer/raymarched_terrain_viewer.dart';
 import 'package:island_gen_flutter/features/terrain_viewer/terrain_viewer.dart';
 
 class MainDisplayArea extends ConsumerWidget {
@@ -13,6 +14,19 @@ class MainDisplayArea extends ConsumerWidget {
   Widget build(BuildContext context, WidgetRef ref) {
     final selectedLayer = ref.watch(globalStateProvider.select((value) => value.selectedLayer));
     final viewMode = ref.watch(globalSettingsProvider.select((value) => value.viewMode));
+
+    Widget viewSelector(ViewMode viewMode) {
+      switch (viewMode) {
+        case ViewMode.view2D:
+          return HeightmapViewer();
+        case ViewMode.solid3D:
+        case ViewMode.wireframe3D:
+        case ViewMode.color3D:
+          return TerrainViewer();
+        case ViewMode.raymarched3D:
+          return RaymarchedTerrainViewer();
+      }
+    }
 
     return Expanded(
       child: Container(
@@ -30,11 +44,7 @@ class MainDisplayArea extends ConsumerWidget {
                     borderRadius: BorderRadius.circular(8),
                   ),
                   child: selectedLayer != null
-                      ? Consumer(
-                          builder: (context, ref, child) {
-                            return viewMode == ViewMode.view2D ? HeightmapViewer() : TerrainViewer();
-                          },
-                        )
+                      ? viewSelector(viewMode)
                       : const Center(
                           child: Text(
                             'Select a layer to preview',
