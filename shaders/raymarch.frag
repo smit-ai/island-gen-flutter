@@ -1,18 +1,20 @@
-// raymarch.frag
+#version 460 core
+precision highp float;
 
 in vec3 v_rayOrigin;
 in vec3 v_rayDirection;
 
 uniform sampler2D heightmapTexture;
+uniform TextureParams {
+    int textureSize;   // texture size
+};
 
 out vec4 frag_color;
 
 const int MAX_STEPS = 256;
 const float MAX_DIST = 100.0;
-// Slightly larger epsilon to reduce false positives near the plane
 const float EPSILON = 0.001;
 const float MIN_STEP = 0.001;
-
 const int REFINEMENT_STEPS = 6;
 
 // Material IDs
@@ -25,13 +27,31 @@ vec2 worldToUV(vec2 p) {
     return (p + vec2(TERRAIN_SIZE * 0.5)) / TERRAIN_SIZE;
 }
 
-float getTerrainHeight(vec2 p) {
+
+float getSmoothHeight(vec2 p) {
     vec2 uv = worldToUV(p);
-    if (uv.x < 0.0 || uv.x > 1.0 || uv.y < 0.0 || uv.y > 1.0) {
-        return 0.0;
-    }
-    float height = texture(heightmapTexture, uv).r;
-    return height * 2.0; // Scale height to 0-2 range
+    uv = clamp(uv, 0.0, 1.0);
+
+    ivec2 texSize = ivec2(textureSize, textureSize);
+    vec2 fTexSize = vec2(texSize);
+    vec2 texCoord = uv * fTexSize - vec2(0.5, 0.5);
+    vec2 iuv = floor(texCoord);
+    vec2 fuv = fract(texCoord);
+
+    vec2 uv00 = (iuv + vec2(0.5, 0.5)) / fTexSize;
+    vec2 uv10 = (iuv + vec2(1.5, 0.5)) / fTexSize;
+    vec2 uv01 = (iuv + vec2(0.5, 1.5)) / fTexSize;
+    vec2 uv11 = (iuv + vec2(1.5, 1.5)) / fTexSize;
+    
+    float h00 = texture(heightmapTexture, uv00).r;
+    float h10 = texture(heightmapTexture, uv10).r;
+    float h01 = texture(heightmapTexture, uv01).r;
+    float h11 = texture(heightmapTexture, uv11).r;
+
+    float h0 = mix(h00, h10, fuv.x);
+    float h1 = mix(h01, h11, fuv.x);
+    float h = mix(h0, h1, fuv.y);
+    return h * 2.0;
 }
 
 float getCheckerboard(vec2 p) {
@@ -40,17 +60,16 @@ float getCheckerboard(vec2 p) {
     return mod(grid.x + grid.y, 2.0);
 }
 
-// Signed distance for the terrain surface (vertical SDF)
 float getTerrainSDF(vec3 p) {
-    float h = getTerrainHeight(p.xz);
+    float h = getSmoothHeight(p.xz);
     return p.y - h;
 }
 
 vec3 calcTerrainNormal(vec3 p) {
     vec2 e = vec2(EPSILON, 0.0);
-    float h = getTerrainHeight(p.xz);
-    float hx = getTerrainHeight(p.xz + e.xy) - getTerrainHeight(p.xz - e.xy);
-    float hz = getTerrainHeight(p.xz + e.yx) - getTerrainHeight(p.xz - e.yx);
+    float h = getSmoothHeight(p.xz);
+    float hx = getSmoothHeight(p.xz + e.xy) - getSmoothHeight(p.xz - e.xy);
+    float hz = getSmoothHeight(p.xz + e.yx) - getSmoothHeight(p.xz - e.yx);
     vec3 n = vec3(hx, 2.0 * e.x, hz);
     return normalize(n);
 }
@@ -163,7 +182,7 @@ void main() {
 
     vec3 color;
     if (material == MAT_TERRAIN) {
-        float height = getTerrainHeight(p.xz);
+        float height = getSmoothHeight(p.xz);
         color = mix(
             vec3(0.2, 0.5, 0.2),  // Green low
             vec3(0.8, 0.8, 0.8),  // Gray high

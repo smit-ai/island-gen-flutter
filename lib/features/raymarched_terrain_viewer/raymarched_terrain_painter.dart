@@ -66,6 +66,16 @@ class RaymarchedTerrainPainter extends CustomPainter {
     )!;
   }
 
+  // Create and fill texture params uniform buffer
+  gpu.DeviceBuffer _createTextureParamsBuffer() {
+    final uniformData = Int32List(1); // Single int for texture size
+    uniformData[0] = heightmapTexture.width; // Assuming square texture
+
+    return gpu.gpuContext.createDeviceBufferWithCopy(
+      ByteData.sublistView(uniformData),
+    )!;
+  }
+
   // Set up render pass with common settings
   (gpu.CommandBuffer, gpu.RenderPass) _setupRenderPass(gpu.RenderTarget renderTarget) {
     final commandBuffer = gpu.gpuContext.createCommandBuffer();
@@ -120,6 +130,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
       modelView: transforms.modelView,
       cameraPosition: transforms.cameraPosition,
     );
+    final textureParamsBuffer = _createTextureParamsBuffer();
 
     // Create a full-screen quad
     final vertices = Float32List.fromList([
@@ -152,37 +163,34 @@ class RaymarchedTerrainPainter extends CustomPainter {
       vertices.length ~/ 2,
     );
 
-    try {
-      // Try binding vertex shader uniforms
-      try {
-        final vertTransformsSlot = vert.getUniformSlot('Transforms');
-        renderPass.bindUniform(
-          vertTransformsSlot,
-          gpu.BufferView(
-            uniformBuffer,
-            offsetInBytes: 0,
-            lengthInBytes: uniformBuffer.sizeInBytes,
-          ),
-        );
-      } catch (e) {
-        print('Warning: Could not bind vertex transforms: $e');
-      }
+    // Bind vertex shader uniforms
+    final vertTransformsSlot = vert.getUniformSlot('Transforms');
+    renderPass.bindUniform(
+      vertTransformsSlot,
+      gpu.BufferView(
+        uniformBuffer,
+        offsetInBytes: 0,
+        lengthInBytes: uniformBuffer.sizeInBytes,
+      ),
+    );
 
-      // Try binding fragment shader texture
-      try {
-        final heightmapSlot = frag.getUniformSlot('heightmapTexture');
-        renderPass.bindTexture(
-          heightmapSlot,
-          heightmapTexture,
-        );
-      } catch (e) {
-        print('Warning: Could not bind heightmap texture: $e');
-      }
-    } catch (e, st) {
-      print('Error in render pass: $e');
-      print('Stack trace: $st');
-      rethrow;
-    }
+    // Bind fragment shader texture
+    final heightmapSlot = frag.getUniformSlot('heightmapTexture');
+    renderPass.bindTexture(
+      heightmapSlot,
+      heightmapTexture,
+    );
+
+    // Bind texture params uniform
+    final textureParamsSlot = frag.getUniformSlot('TextureParams');
+    renderPass.bindUniform(
+      textureParamsSlot,
+      gpu.BufferView(
+        textureParamsBuffer,
+        offsetInBytes: 0,
+        lengthInBytes: textureParamsBuffer.sizeInBytes,
+      ),
+    );
 
     // Draw full-screen quad
     renderPass.setPrimitiveType(gpu.PrimitiveType.triangleStrip);
