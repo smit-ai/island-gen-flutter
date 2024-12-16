@@ -1,11 +1,7 @@
 in vec3 v_rayOrigin;
 in vec3 v_rayDirection;
 
-uniform Transforms {
-    mat4 modelViewProjection;
-    mat4 modelMatrix;
-    vec4 cameraPosition;
-};
+uniform sampler2D heightmapTexture;
 
 out vec4 frag_color;
 
@@ -13,10 +9,17 @@ const int MAX_STEPS = 100;
 const float MAX_DIST = 100.0;
 const float EPSILON = 0.001;
 
-// Get height at a point (temporary simple function)
+// Get height at a point using the heightmap texture
 float getTerrainHeight(vec2 p) {
-    // Simple sine wave terrain for testing
-    return sin(p.x) * cos(p.y) * 0.5;
+    // Convert world coordinates to UV coordinates (0-1 range)
+    vec2 uv = (p + vec2(5.0)) / 10.0;  // Assuming terrain is 10x10 units centered at origin
+    
+    // Sample heightmap
+    if (uv.x >= 0.0 && uv.x <= 1.0 && uv.y >= 0.0 && uv.y <= 1.0) {
+        vec4 heightSample = texture(heightmapTexture, uv);
+        return (heightSample.r - 0.5) * 2.0;  // Convert from 0-1 to -1 to 1 range
+    }
+    return 0.0;  // Return 0 for points outside the terrain
 }
 
 // Raymarch the terrain

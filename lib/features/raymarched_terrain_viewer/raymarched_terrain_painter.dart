@@ -1,7 +1,6 @@
 import 'dart:typed_data';
 
 import 'package:flutter/material.dart' hide Matrix4;
-import 'dart:ui' as ui;
 import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:island_gen_flutter/features/camera/camera_state_provider.dart';
 import 'package:island_gen_flutter/shaders.dart';
@@ -9,11 +8,11 @@ import 'package:vector_math/vector_math.dart';
 
 class RaymarchedTerrainPainter extends CustomPainter {
   final CameraState cameraState;
-  final ui.Image heightmap;
+  final gpu.Texture heightmapTexture;
 
   const RaymarchedTerrainPainter({
     required this.cameraState,
-    required this.heightmap,
+    required this.heightmapTexture,
   });
 
   // Create transformation matrices and camera data
@@ -67,6 +66,15 @@ class RaymarchedTerrainPainter extends CustomPainter {
     )!;
   }
 
+  // Set up render pass with common settings
+  (gpu.CommandBuffer, gpu.RenderPass) _setupRenderPass(gpu.RenderTarget renderTarget) {
+    final commandBuffer = gpu.gpuContext.createCommandBuffer();
+    final renderPass = commandBuffer.createRenderPass(renderTarget);
+    renderPass.setDepthWriteEnable(true);
+    renderPass.setDepthCompareOperation(gpu.CompareFunction.less);
+    return (commandBuffer, renderPass);
+  }
+
   @override
   void paint(Canvas canvas, Size size) {
     // Create a texture to render our scene into
@@ -76,45 +84,62 @@ class RaymarchedTerrainPainter extends CustomPainter {
       size.height.toInt(),
     )!;
 
+    // Create a depth texture for depth testing
+    final depthTexture = gpu.gpuContext.createTexture(
+      gpu.StorageMode.devicePrivate,
+      size.width.toInt(),
+      size.height.toInt(),
+      format: gpu.gpuContext.defaultDepthStencilFormat,
+    );
+
+    if (depthTexture == null) {
+      throw Exception('Failed to create depth texture');
+    }
+
     // Set up the render target
     final renderTarget = gpu.RenderTarget.singleColor(
       gpu.ColorAttachment(
         texture: texture,
         clearValue: Vector4(0.1, 0.1, 0.1, 1.0),
       ),
+      depthStencilAttachment: gpu.DepthStencilAttachment(
+        texture: depthTexture,
+        depthLoadAction: gpu.LoadAction.clear,
+        depthStoreAction: gpu.StoreAction.store,
+        depthClearValue: 1.0,
+        stencilLoadAction: gpu.LoadAction.clear,
+        stencilStoreAction: gpu.StoreAction.dontCare,
+        stencilClearValue: 0,
+      ),
     );
 
-    // Create command buffer and render pass
-    final commandBuffer = gpu.gpuContext.createCommandBuffer();
-    final renderPass = commandBuffer.createRenderPass(renderTarget);
-
-    // Get transforms
+    // Create common resources
     final transforms = _createTransforms(size);
-
-    // Create uniform buffer
     final uniformBuffer = _createUniformBuffer(
       mvp: transforms.mvp,
       modelView: transforms.modelView,
       cameraPosition: transforms.cameraPosition,
     );
 
-    // Get shaders and create pipeline
-    final vert = shaderLibrary['RaymarchVertex']!;
-    final frag = shaderLibrary['RaymarchFragment']!;
-    final pipeline = gpu.gpuContext.createRenderPipeline(vert, frag);
-
     // Create a full-screen quad
     final vertices = Float32List.fromList([
-      // positions (x, y)
-      -1.0, -1.0,
-      1.0, -1.0,
-      -1.0, 1.0,
-      1.0, 1.0,
+      -1.0, -1.0, // Bottom left
+      1.0, -1.0, // Bottom right
+      -1.0, 1.0, // Top left
+      1.0, 1.0, // Top right
     ]);
 
     final verticesBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(vertices),
     )!;
+
+    // Get shaders and create pipeline
+    final vert = shaderLibrary['RaymarchVertex']!;
+    final frag = shaderLibrary['RaymarchFragment']!;
+    final pipeline = gpu.gpuContext.createRenderPipeline(vert, frag);
+
+    // Set up render pass
+    final (commandBuffer, renderPass) = _setupRenderPass(renderTarget);
 
     // Bind pipeline and buffers
     renderPass.bindPipeline(pipeline);
@@ -127,24 +152,37 @@ class RaymarchedTerrainPainter extends CustomPainter {
       vertices.length ~/ 2,
     );
 
-    // Bind uniforms
-    renderPass.bindUniform(
-      vert.getUniformSlot('Transforms'),
-      gpu.BufferView(
-        uniformBuffer,
-        offsetInBytes: 0,
-        lengthInBytes: uniformBuffer.sizeInBytes,
-      ),
-    );
+    try {
+      // Try binding vertex shader uniforms
+      try {
+        final vertTransformsSlot = vert.getUniformSlot('Transforms');
+        renderPass.bindUniform(
+          vertTransformsSlot,
+          gpu.BufferView(
+            uniformBuffer,
+            offsetInBytes: 0,
+            lengthInBytes: uniformBuffer.sizeInBytes,
+          ),
+        );
+      } catch (e) {
+        print('Warning: Could not bind vertex transforms: $e');
+      }
 
-    renderPass.bindUniform(
-      frag.getUniformSlot('Transforms'),
-      gpu.BufferView(
-        uniformBuffer,
-        offsetInBytes: 0,
-        lengthInBytes: uniformBuffer.sizeInBytes,
-      ),
-    );
+      // Try binding fragment shader texture
+      try {
+        final heightmapSlot = frag.getUniformSlot('heightmapTexture');
+        renderPass.bindTexture(
+          heightmapSlot,
+          heightmapTexture,
+        );
+      } catch (e) {
+        print('Warning: Could not bind heightmap texture: $e');
+      }
+    } catch (e, st) {
+      print('Error in render pass: $e');
+      print('Stack trace: $st');
+      rethrow;
+    }
 
     // Draw full-screen quad
     renderPass.setPrimitiveType(gpu.PrimitiveType.triangleStrip);
