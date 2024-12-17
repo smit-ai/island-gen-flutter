@@ -24,8 +24,10 @@ const int MAT_CHECKER = 2;
 
 vec2 worldToUV(vec2 p) {
     const float TERRAIN_SIZE = 10.0;
-    return (p + vec2(TERRAIN_SIZE * 0.5)) / TERRAIN_SIZE;
+    vec2 uv = (p + vec2(TERRAIN_SIZE * 0.5)) / TERRAIN_SIZE;
+    return clamp(uv, 0.0, 1.0);
 }
+
 
 
 float getSmoothHeight(vec2 p) {
@@ -64,10 +66,22 @@ float getCheckerboard(vec2 p) {
     return mod(grid.x + grid.y, 2.0);
 }
 
+// float getTerrainSDF(vec3 p) {
+//     float h = getSmoothHeight(p.xz);
+//     return p.y - h;
+// }
+
 float getTerrainSDF(vec3 p) {
+    const float BOUNDS = 5.0; // Set your desired terrain half-size
+
+    if (abs(p.x) > BOUNDS || abs(p.z) > BOUNDS) {
+        return p.y; // Return positive value outside bounds (flat surface)
+    }
+
     float h = getSmoothHeight(p.xz);
     return p.y - h;
 }
+
 
 vec3 calcTerrainNormal(vec3 p) {
     vec2 e = vec2(EPSILON, 0.0);
