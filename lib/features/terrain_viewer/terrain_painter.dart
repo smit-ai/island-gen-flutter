@@ -121,7 +121,7 @@ class TerrainPainter extends CustomPainter {
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
       size.height.toInt(),
-      format: gpu.PixelFormat.r16g16b16a16Float,
+      format: gpu.PixelFormat.r32g32b32a32Float,
     )!;
 
     // Create a depth texture for depth testing

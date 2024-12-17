@@ -13,7 +13,7 @@ out vec4 frag_color;
 
 const int MAX_STEPS = 256;
 const float MAX_DIST = 100.0;
-const float EPSILON = 0.001;
+const float EPSILON = 0.0001;
 const float MIN_STEP = 0.001;
 const int REFINEMENT_STEPS = 6;
 
@@ -44,9 +44,13 @@ float getSmoothHeight(vec2 p) {
     vec2 uv11 = (iuv + vec2(1.5, 1.5)) / fTexSize;
     
     float h00 = texture(heightmapTexture, uv00).r;
+    if (isnan(h00)) h00 = 0.0; // Fallback for invalid samples
     float h10 = texture(heightmapTexture, uv10).r;
+    if (isnan(h10)) h10 = 0.0; // Fallback for invalid samples
     float h01 = texture(heightmapTexture, uv01).r;
+    if (isnan(h01)) h01 = 0.0; // Fallback for invalid samples
     float h11 = texture(heightmapTexture, uv11).r;
+    if (isnan(h11)) h11 = 0.0; // Fallback for invalid samples
 
     float h0 = mix(h00, h10, fuv.x);
     float h1 = mix(h01, h11, fuv.x);
@@ -73,6 +77,8 @@ vec3 calcTerrainNormal(vec3 p) {
     vec3 n = vec3(hx, 2.0 * e.x, hz);
     return normalize(n);
 }
+
+
 
 float refineIntersection(vec3 ro, vec3 rd, float tMin, float tMax) {
     for (int i = 0; i < REFINEMENT_STEPS; i++) {
