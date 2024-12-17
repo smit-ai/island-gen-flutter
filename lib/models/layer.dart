@@ -1,4 +1,4 @@
-import 'dart:ui' as ui;
+import 'package:flutter_gpu/gpu.dart' as gpu;
 
 import 'package:freezed_annotation/freezed_annotation.dart';
 
@@ -40,11 +40,23 @@ class LayerNoiseParams with _$LayerNoiseParams {
 class Layer with _$Layer {
   const factory Layer({
     required String id,
-    @Default('New Layer') String name,
-    @Default(true) bool visible,
-    @Default(1.0) double influence,
-    @Default(LayerBlendMode.add) LayerBlendMode blendMode,
-    @Default(LayerNoiseParams()) LayerNoiseParams noise,
-    @Default(null) ui.Image? cachedData,
+    required String name,
+    required bool visible,
+    required double influence,
+    required LayerBlendMode blendMode,
+    required LayerNoiseParams noiseParams,
+    required gpu.Texture texture,
+    required String noiseGenId,
   }) = _Layer;
+
+  factory Layer.newLayer(String id, gpu.Texture texture, {String noiseGenId = '', LayerNoiseParams noiseParams = const LayerNoiseParams()}) => Layer(
+        id: id,
+        name: 'New Layer',
+        visible: true,
+        influence: 1.0,
+        blendMode: LayerBlendMode.add,
+        noiseParams: noiseParams,
+        texture: texture,
+        noiseGenId: noiseGenId,
+      );
 }

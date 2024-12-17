@@ -5,7 +5,7 @@ extension TextureExtensions on gpu.Texture {
   /// Creates a texture from a [ui.Image] with shader read usage enabled.
   static Future<gpu.Texture> fromImage(ui.Image image, gpu.PixelFormat format) async {
     // Extract ByteData in RGBA format
-    final byteData = await image.toByteData(format: ui.ImageByteFormat.rawRgba);
+    final byteData = await image.toByteData(format: ui.ImageByteFormat.rawExtendedRgba128);
     if (byteData == null) {
       throw Exception('Failed to extract ByteData from image');
     }

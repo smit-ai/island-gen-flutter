@@ -1,3 +1,4 @@
+import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_generator/heightmap_generator.dart';
 import 'package:island_gen_flutter/models/layer.dart';
@@ -7,17 +8,33 @@ part 'package:island_gen_flutter/generated/features/editor/providers/layer_provi
 
 @Riverpod(keepAlive: true)
 class LayerController extends _$LayerController {
+  LayerNoiseParams? _previousParams;
+
   @override
   Layer build(String layerId) {
     print('LayerController build: $layerId');
     ref.listen(globalSettingsProvider, (previous, next) {
       if (previous?.resolution != next.resolution) {
-        generateHeightmap();
+        state = initLayer(layerId);
       }
     });
 
-    final layer = Layer(id: layerId);
-    Future(() => generateHeightmap());
+    return initLayer(layerId);
+  }
+
+  Layer initLayer(String layerId) {
+    final globalSettings = ref.read(globalSettingsProvider);
+    final texture = gpu.gpuContext.createTexture(
+      gpu.StorageMode.devicePrivate,
+      globalSettings.resolution.width.toInt(),
+      globalSettings.resolution.height.toInt(),
+      format: gpu.PixelFormat.r16g16b16a16Float,
+    )!;
+
+    final noiseParams = _previousParams ?? LayerNoiseParams();
+    final noiseGenId = HeightmapGenerator.noise(texture, noiseParams);
+    final layer = Layer.newLayer(layerId, texture, noiseGenId: noiseGenId, noiseParams: noiseParams);
+
     return layer;
   }
 
@@ -29,25 +46,12 @@ class LayerController extends _$LayerController {
     state = state.copyWith(visible: !state.visible);
   }
 
-  void generateHeightmap() async {
-    final globalSettings = ref.read(globalSettingsProvider);
-    final resolution = globalSettings.resolution;
-    final heightmap = await HeightmapGenerator.noise(
-      resolution.width.toInt(),
-      resolution.height.toInt(),
-      scale: state.noise.scale,
-      octaves: state.noise.octaves,
-      persistence: state.noise.persistence,
-      frequency: state.noise.frequency,
-      seed: state.noise.seed,
-      offsetX: state.noise.offsetX,
-      offsetY: state.noise.offsetY,
-      rotation: state.noise.rotation,
-      invert: state.noise.invert,
-      clampMin: state.noise.clampMin,
-      clampMax: state.noise.clampMax,
+  void regenerateNoiseMap() {
+    final noiseGenId = HeightmapGenerator.noise(
+      state.texture,
+      state.noiseParams,
     );
-    state = state.copyWith(cachedData: heightmap);
+    state = state.copyWith(noiseGenId: noiseGenId);
   }
 
   void updateName(String name) {
@@ -63,7 +67,8 @@ class LayerController extends _$LayerController {
   }
 
   void updateNoiseParams(LayerNoiseParams noiseParams) {
-    state = state.copyWith(noise: noiseParams);
-    generateHeightmap();
+    _previousParams = noiseParams;
+    state = state.copyWith(noiseParams: noiseParams);
+    regenerateNoiseMap();
   }
 }

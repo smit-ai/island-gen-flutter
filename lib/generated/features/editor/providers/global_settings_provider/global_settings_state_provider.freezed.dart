@@ -300,7 +300,7 @@ class __$$GlobalSettingsModelImplCopyWithImpl<$Res>
 
 class _$GlobalSettingsModelImpl implements _GlobalSettingsModel {
   const _$GlobalSettingsModelImpl(
-      {this.resolution = const Resolution(width: 512, height: 512),
+      {this.resolution = const Resolution(width: 1024, height: 1024),
       this.seed = 0,
       this.viewMode = ViewMode.view2D,
       final List<Resolution> presets = const [

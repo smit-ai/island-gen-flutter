@@ -23,7 +23,7 @@ class Resolution with _$Resolution {
 @freezed
 class GlobalSettingsModel with _$GlobalSettingsModel {
   const factory GlobalSettingsModel({
-    @Default(Resolution(width: 512, height: 512)) Resolution resolution,
+    @Default(Resolution(width: 1024, height: 1024)) Resolution resolution,
     @Default(0) int seed,
     @Default(ViewMode.view2D) ViewMode viewMode,
     @Default([

@@ -1,27 +1,15 @@
 import 'dart:typed_data';
-import 'dart:ui' as ui;
 import 'package:flutter_gpu/gpu.dart' as gpu;
 import 'package:island_gen_flutter/models/layer.dart';
+import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math.dart';
 import 'package:island_gen_flutter/shaders.dart';
-import 'package:island_gen_flutter/features/heightmap_generator/extentions.dart';
 
 class HeightmapGenerator {
-  static Future<ui.Image> noise(
-    int width,
-    int height, {
-    double scale = 1.0,
-    int octaves = 4,
-    double persistence = 0.5,
-    double frequency = 1.0,
-    int seed = 0,
-    double offsetX = 0.0,
-    double offsetY = 0.0,
-    double rotation = 0.0,
-    bool invert = false,
-    double clampMin = 0.0,
-    double clampMax = 1.0,
-  }) async {
+  static String noise(
+    gpu.Texture texture,
+    LayerNoiseParams noiseParams,
+  ) {
     // Create vertex buffer for quad
     final vertices = Float32List.fromList([
       // pos(xy), uv
@@ -46,27 +34,20 @@ class HeightmapGenerator {
 
     // Create uniform buffer for noise parameters
     final uniformData = Float32List(11);
-    uniformData[0] = scale;
-    uniformData[1] = octaves.toDouble();
-    uniformData[2] = persistence;
-    uniformData[3] = seed.toDouble();
-    uniformData[4] = frequency;
-    uniformData[5] = offsetX;
-    uniformData[6] = offsetY;
-    uniformData[7] = rotation;
-    uniformData[8] = invert ? 1.0 : 0.0;
-    uniformData[9] = clampMin;
-    uniformData[10] = clampMax;
+    uniformData[0] = noiseParams.scale;
+    uniformData[1] = noiseParams.octaves.toDouble();
+    uniformData[2] = noiseParams.persistence;
+    uniformData[3] = noiseParams.seed.toDouble();
+    uniformData[4] = noiseParams.frequency;
+    uniformData[5] = noiseParams.offsetX;
+    uniformData[6] = noiseParams.offsetY;
+    uniformData[7] = noiseParams.rotation;
+    uniformData[8] = noiseParams.invert ? 1.0 : 0.0;
+    uniformData[9] = noiseParams.clampMin;
+    uniformData[10] = noiseParams.clampMax;
 
     final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),
-    )!;
-
-    // Create texture to render into
-    final texture = gpu.gpuContext.createTexture(
-      gpu.StorageMode.devicePrivate,
-      width,
-      height,
     )!;
 
     // Set up render target
@@ -121,19 +102,13 @@ class HeightmapGenerator {
     commandBuffer.submit();
 
     // Convert to Flutter Image
-    return texture.asImage();
+    return Uuid().v4();
   }
 
-  static Future<ui.Image> blendLayerStack(List<Layer> layers, int width, int height) async {
+  static void blendLayerStack({required gpu.Texture texture, required List<Layer> layers}) {
     if (layers.isEmpty) {
-      throw Exception('Layer stack is empty');
-    }
-
-    final validLayers = layers.where((layer) => layer.cachedData != null).toList();
-
-    // If only one layer, return it directly
-    if (validLayers.length == 1) {
-      return validLayers.first.cachedData!;
+      print('Layer stack is empty');
+      return;
     }
 
     // Create vertex buffer for quad
@@ -164,18 +139,12 @@ class HeightmapGenerator {
     final pipeline = gpu.gpuContext.createRenderPipeline(vert, frag);
 
     // Start with the bottom layer
-    var currentTexture = await TextureExtensions.fromImage(
-      validLayers.first.cachedData!,
-      gpu.PixelFormat.r8g8b8a8UNormInt,
-    );
+    var currentTexture = layers.first.texture;
 
     // Process each layer from bottom to top
-    for (int i = 1; i < validLayers.length; i++) {
-      final nextLayer = validLayers[i];
-      final nextTexture = await TextureExtensions.fromImage(
-        nextLayer.cachedData!,
-        gpu.PixelFormat.r8g8b8a8UNormInt,
-      );
+    for (int i = 1; i < layers.length; i++) {
+      final nextLayer = layers[i];
+      final nextTexture = nextLayer.texture;
 
       // Create blend mode and opacity uniform buffer
       final uniformData = Float32List(2);
@@ -189,13 +158,7 @@ class HeightmapGenerator {
       // Set up render target for the blend operation
       final renderTarget = gpu.RenderTarget.singleColor(
         gpu.ColorAttachment(
-          texture: gpu.gpuContext.createTexture(
-            gpu.StorageMode.devicePrivate,
-            width,
-            height,
-            format: gpu.PixelFormat.r8g8b8a8UNormInt,
-            enableShaderReadUsage: true,
-          )!,
+          texture: texture,
           clearValue: Vector4(0.0, 0.0, 0.0, 1.0),
         ),
       );
@@ -250,8 +213,6 @@ class HeightmapGenerator {
       currentTexture = renderTarget.colorAttachments.first.texture;
     }
 
-    // Get final image and clean up
-    final result = currentTexture.asImage();
-    return result;
+    return;
   }
 }

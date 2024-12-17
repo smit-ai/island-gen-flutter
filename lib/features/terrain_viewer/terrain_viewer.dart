@@ -22,9 +22,8 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
   @override
   void initState() {
     final heightmap = ref.read(heightmapDataProvider);
-    if (heightmap.hasValue) {
-      _rebuildTerrain(heightmap.requireValue);
-    }
+    _rebuildTerrain(heightmap.asImage());
+
     super.initState();
   }
 
@@ -39,6 +38,7 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
         depth: settings.depth,
         resolution: settings.gridResolution,
       );
+      if (!mounted) return;
 
       setState(() {
         _terrainMesh = mesh;
@@ -56,18 +56,14 @@ class _TerrainViewerState extends ConsumerState<TerrainViewer> {
   Widget build(BuildContext context) {
     // Listen to heightmap changes
     ref.listen(heightmapDataProvider, (previous, next) {
-      if (next.hasValue) {
-        _rebuildTerrain(next.requireValue);
-      }
+      _rebuildTerrain(next.asImage());
     });
 
     // Listen to terrain settings changes
     ref.listen(terrainSettingsProvider, (previous, next) {
       if (previous != null && next != previous && next.autoRebuild && _terrainMesh != null) {
         final heightmap = ref.read(heightmapDataProvider);
-        if (heightmap.hasValue) {
-          _rebuildTerrain(heightmap.requireValue);
-        }
+        _rebuildTerrain(heightmap.asImage());
       }
     });
 

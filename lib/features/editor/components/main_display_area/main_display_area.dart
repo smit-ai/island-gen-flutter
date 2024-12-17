@@ -12,8 +12,8 @@ class MainDisplayArea extends ConsumerWidget {
 
   @override
   Widget build(BuildContext context, WidgetRef ref) {
-    final selectedLayer = ref.watch(globalStateProvider.select((value) => value.selectedLayer));
     final viewMode = ref.watch(globalSettingsProvider.select((value) => value.viewMode));
+    final noActiveLayers = ref.watch(globalStateProvider).activeLayerStack.isEmpty;
 
     Widget viewSelector(ViewMode viewMode) {
       switch (viewMode) {
@@ -43,14 +43,14 @@ class MainDisplayArea extends ConsumerWidget {
                     color: Colors.grey[900],
                     borderRadius: BorderRadius.circular(8),
                   ),
-                  child: selectedLayer != null
-                      ? viewSelector(viewMode)
-                      : const Center(
+                  child: noActiveLayers
+                      ? const Center(
                           child: Text(
-                            'Select a layer to preview',
+                            'No active layers',
                             style: TextStyle(color: Colors.white),
                           ),
-                        ),
+                        )
+                      : viewSelector(viewMode),
                 ),
               ),
             ),

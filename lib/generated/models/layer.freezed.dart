@@ -427,8 +427,9 @@ mixin _$Layer {
   bool get visible => throw _privateConstructorUsedError;
   double get influence => throw _privateConstructorUsedError;
   LayerBlendMode get blendMode => throw _privateConstructorUsedError;
-  LayerNoiseParams get noise => throw _privateConstructorUsedError;
-  ui.Image? get cachedData => throw _privateConstructorUsedError;
+  LayerNoiseParams get noiseParams => throw _privateConstructorUsedError;
+  gpu.Texture get texture => throw _privateConstructorUsedError;
+  String get noiseGenId => throw _privateConstructorUsedError;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -447,10 +448,11 @@ abstract class $LayerCopyWith<$Res> {
       bool visible,
       double influence,
       LayerBlendMode blendMode,
-      LayerNoiseParams noise,
-      ui.Image? cachedData});
+      LayerNoiseParams noiseParams,
+      gpu.Texture texture,
+      String noiseGenId});
 
-  $LayerNoiseParamsCopyWith<$Res> get noise;
+  $LayerNoiseParamsCopyWith<$Res> get noiseParams;
 }
 
 /// @nodoc
@@ -473,8 +475,9 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
     Object? visible = null,
     Object? influence = null,
     Object? blendMode = null,
-    Object? noise = null,
-    Object? cachedData = freezed,
+    Object? noiseParams = null,
+    Object? texture = null,
+    Object? noiseGenId = null,
   }) {
     return _then(_value.copyWith(
       id: null == id
@@ -497,14 +500,18 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
               as LayerBlendMode,
-      noise: null == noise
-          ? _value.noise
-          : noise // ignore: cast_nullable_to_non_nullable
+      noiseParams: null == noiseParams
+          ? _value.noiseParams
+          : noiseParams // ignore: cast_nullable_to_non_nullable
               as LayerNoiseParams,
-      cachedData: freezed == cachedData
-          ? _value.cachedData
-          : cachedData // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
+      texture: null == texture
+          ? _value.texture
+          : texture // ignore: cast_nullable_to_non_nullable
+              as gpu.Texture,
+      noiseGenId: null == noiseGenId
+          ? _value.noiseGenId
+          : noiseGenId // ignore: cast_nullable_to_non_nullable
+              as String,
     ) as $Val);
   }
 
@@ -512,9 +519,9 @@ class _$LayerCopyWithImpl<$Res, $Val extends Layer>
   /// with the given fields replaced by the non-null parameter values.
   @override
   @pragma('vm:prefer-inline')
-  $LayerNoiseParamsCopyWith<$Res> get noise {
-    return $LayerNoiseParamsCopyWith<$Res>(_value.noise, (value) {
-      return _then(_value.copyWith(noise: value) as $Val);
+  $LayerNoiseParamsCopyWith<$Res> get noiseParams {
+    return $LayerNoiseParamsCopyWith<$Res>(_value.noiseParams, (value) {
+      return _then(_value.copyWith(noiseParams: value) as $Val);
     });
   }
 }
@@ -532,11 +539,12 @@ abstract class _$$LayerImplCopyWith<$Res> implements $LayerCopyWith<$Res> {
       bool visible,
       double influence,
       LayerBlendMode blendMode,
-      LayerNoiseParams noise,
-      ui.Image? cachedData});
+      LayerNoiseParams noiseParams,
+      gpu.Texture texture,
+      String noiseGenId});
 
   @override
-  $LayerNoiseParamsCopyWith<$Res> get noise;
+  $LayerNoiseParamsCopyWith<$Res> get noiseParams;
 }
 
 /// @nodoc
@@ -557,8 +565,9 @@ class __$$LayerImplCopyWithImpl<$Res>
     Object? visible = null,
     Object? influence = null,
     Object? blendMode = null,
-    Object? noise = null,
-    Object? cachedData = freezed,
+    Object? noiseParams = null,
+    Object? texture = null,
+    Object? noiseGenId = null,
   }) {
     return _then(_$LayerImpl(
       id: null == id
@@ -581,14 +590,18 @@ class __$$LayerImplCopyWithImpl<$Res>
           ? _value.blendMode
           : blendMode // ignore: cast_nullable_to_non_nullable
               as LayerBlendMode,
-      noise: null == noise
-          ? _value.noise
-          : noise // ignore: cast_nullable_to_non_nullable
+      noiseParams: null == noiseParams
+          ? _value.noiseParams
+          : noiseParams // ignore: cast_nullable_to_non_nullable
               as LayerNoiseParams,
-      cachedData: freezed == cachedData
-          ? _value.cachedData
-          : cachedData // ignore: cast_nullable_to_non_nullable
-              as ui.Image?,
+      texture: null == texture
+          ? _value.texture
+          : texture // ignore: cast_nullable_to_non_nullable
+              as gpu.Texture,
+      noiseGenId: null == noiseGenId
+          ? _value.noiseGenId
+          : noiseGenId // ignore: cast_nullable_to_non_nullable
+              as String,
     ));
   }
 }
@@ -598,37 +611,34 @@ class __$$LayerImplCopyWithImpl<$Res>
 class _$LayerImpl implements _Layer {
   const _$LayerImpl(
       {required this.id,
-      this.name = 'New Layer',
-      this.visible = true,
-      this.influence = 1.0,
-      this.blendMode = LayerBlendMode.add,
-      this.noise = const LayerNoiseParams(),
-      this.cachedData = null});
+      required this.name,
+      required this.visible,
+      required this.influence,
+      required this.blendMode,
+      required this.noiseParams,
+      required this.texture,
+      required this.noiseGenId});
 
   @override
   final String id;
   @override
-  @JsonKey()
   final String name;
   @override
-  @JsonKey()
   final bool visible;
   @override
-  @JsonKey()
   final double influence;
   @override
-  @JsonKey()
   final LayerBlendMode blendMode;
   @override
-  @JsonKey()
-  final LayerNoiseParams noise;
+  final LayerNoiseParams noiseParams;
   @override
-  @JsonKey()
-  final ui.Image? cachedData;
+  final gpu.Texture texture;
+  @override
+  final String noiseGenId;
 
   @override
   String toString() {
-    return 'Layer(id: $id, name: $name, visible: $visible, influence: $influence, blendMode: $blendMode, noise: $noise, cachedData: $cachedData)';
+    return 'Layer(id: $id, name: $name, visible: $visible, influence: $influence, blendMode: $blendMode, noiseParams: $noiseParams, texture: $texture, noiseGenId: $noiseGenId)';
   }
 
   @override
@@ -643,14 +653,16 @@ class _$LayerImpl implements _Layer {
                 other.influence == influence) &&
             (identical(other.blendMode, blendMode) ||
                 other.blendMode == blendMode) &&
-            (identical(other.noise, noise) || other.noise == noise) &&
-            (identical(other.cachedData, cachedData) ||
-                other.cachedData == cachedData));
+            (identical(other.noiseParams, noiseParams) ||
+                other.noiseParams == noiseParams) &&
+            (identical(other.texture, texture) || other.texture == texture) &&
+            (identical(other.noiseGenId, noiseGenId) ||
+                other.noiseGenId == noiseGenId));
   }
 
   @override
-  int get hashCode => Object.hash(
-      runtimeType, id, name, visible, influence, blendMode, noise, cachedData);
+  int get hashCode => Object.hash(runtimeType, id, name, visible, influence,
+      blendMode, noiseParams, texture, noiseGenId);
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.
@@ -664,12 +676,13 @@ class _$LayerImpl implements _Layer {
 abstract class _Layer implements Layer {
   const factory _Layer(
       {required final String id,
-      final String name,
-      final bool visible,
-      final double influence,
-      final LayerBlendMode blendMode,
-      final LayerNoiseParams noise,
-      final ui.Image? cachedData}) = _$LayerImpl;
+      required final String name,
+      required final bool visible,
+      required final double influence,
+      required final LayerBlendMode blendMode,
+      required final LayerNoiseParams noiseParams,
+      required final gpu.Texture texture,
+      required final String noiseGenId}) = _$LayerImpl;
 
   @override
   String get id;
@@ -682,9 +695,11 @@ abstract class _Layer implements Layer {
   @override
   LayerBlendMode get blendMode;
   @override
-  LayerNoiseParams get noise;
+  LayerNoiseParams get noiseParams;
   @override
-  ui.Image? get cachedData;
+  gpu.Texture get texture;
+  @override
+  String get noiseGenId;
 
   /// Create a copy of Layer
   /// with the given fields replaced by the non-null parameter values.

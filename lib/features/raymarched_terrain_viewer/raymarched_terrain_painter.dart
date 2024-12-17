@@ -92,6 +92,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
       size.height.toInt(),
+      format: gpu.PixelFormat.r32g32b32a32Float,
     )!;
 
     // Create a depth texture for depth testing
