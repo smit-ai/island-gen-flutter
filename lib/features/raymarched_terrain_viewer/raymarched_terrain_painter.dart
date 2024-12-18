@@ -15,79 +15,9 @@ class RaymarchedTerrainPainter extends CustomPainter {
     required this.heightmapTexture,
   });
 
-  // Create transformation matrices and camera data
-  ({
-    Matrix4 mvp,
-    Matrix4 modelView,
-    Vector3 cameraPosition,
-    double aspect,
-  }) _createTransforms(Size size) {
-    final aspect = size.width / size.height;
-    final projection = cameraState.getProjectionMatrix(aspect);
-    final view = cameraState.getViewMatrix();
-    final model = Matrix4.identity();
-    final mvp = projection * view * model;
-    final modelView = view * model;
-    final cameraPosition = cameraState.getCameraPosition();
-
-    return (
-      mvp: mvp,
-      modelView: modelView,
-      cameraPosition: cameraPosition,
-      aspect: aspect,
-    );
-  }
-
-  // Create and fill uniform buffer
-  gpu.DeviceBuffer _createUniformBuffer({
-    required Matrix4 mvp,
-    required Matrix4 modelView,
-    required Vector3 cameraPosition,
-  }) {
-    final uniformData = Float32List(16 + 16 + 4);
-    int offset = 0;
-
-    // Pass MVP matrix
-    uniformData.setAll(offset, mvp.storage);
-    offset += 16;
-
-    // Pass model-view matrix
-    uniformData.setAll(offset, modelView.storage);
-    offset += 16;
-
-    // Pass camera position
-    uniformData[offset++] = cameraPosition.x;
-    uniformData[offset++] = cameraPosition.y;
-    uniformData[offset++] = cameraPosition.z;
-    uniformData[offset++] = 1.0;
-
-    return gpu.gpuContext.createDeviceBufferWithCopy(
-      ByteData.sublistView(uniformData),
-    )!;
-  }
-
-  // Create and fill texture params uniform buffer
-  gpu.DeviceBuffer _createTextureParamsBuffer() {
-    final uniformData = Int32List(1); // Single int for texture size
-    uniformData[0] = heightmapTexture.width; // Assuming square texture
-
-    return gpu.gpuContext.createDeviceBufferWithCopy(
-      ByteData.sublistView(uniformData),
-    )!;
-  }
-
-  // Set up render pass with common settings
-  (gpu.CommandBuffer, gpu.RenderPass) _setupRenderPass(gpu.RenderTarget renderTarget) {
-    final commandBuffer = gpu.gpuContext.createCommandBuffer();
-    final renderPass = commandBuffer.createRenderPass(renderTarget);
-    renderPass.setDepthWriteEnable(true);
-    renderPass.setDepthCompareOperation(gpu.CompareFunction.less);
-    return (commandBuffer, renderPass);
-  }
-
   @override
   void paint(Canvas canvas, Size size) {
-    // Create a texture to render our scene into
+    // Create output textures
     final texture = gpu.gpuContext.createTexture(
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
@@ -95,7 +25,6 @@ class RaymarchedTerrainPainter extends CustomPainter {
       format: gpu.PixelFormat.r32g32b32a32Float,
     )!;
 
-    // Create a depth texture for depth testing
     final depthTexture = gpu.gpuContext.createTexture(
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
@@ -107,7 +36,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
       throw Exception('Failed to create depth texture');
     }
 
-    // Set up the render target
+    // Set up render target
     final renderTarget = gpu.RenderTarget.singleColor(
       gpu.ColorAttachment(
         texture: texture,
@@ -124,16 +53,37 @@ class RaymarchedTerrainPainter extends CustomPainter {
       ),
     );
 
-    // Create common resources
-    final transforms = _createTransforms(size);
-    final uniformBuffer = _createUniformBuffer(
-      mvp: transforms.mvp,
-      modelView: transforms.modelView,
-      cameraPosition: transforms.cameraPosition,
-    );
-    final textureParamsBuffer = _createTextureParamsBuffer();
+    // Calculate transformation matrices
+    final aspect = size.width / size.height;
+    final projection = cameraState.getProjectionMatrix(aspect);
+    final view = cameraState.getViewMatrix();
+    final model = Matrix4.identity();
+    final mvp = projection * view * model;
+    final modelView = view * model;
+    final cameraPosition = cameraState.getCameraPosition();
 
-    // Create a full-screen quad
+    // Create transform uniform buffer
+    final transformData = Float32List(16 + 16 + 4);
+    transformData.setAll(0, mvp.storage);
+    transformData.setAll(16, modelView.storage);
+    transformData[32] = cameraPosition.x;
+    transformData[33] = cameraPosition.y;
+    transformData[34] = cameraPosition.z;
+    transformData[35] = 1.0;
+
+    final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
+      ByteData.sublistView(transformData),
+    )!;
+
+    // Create texture params buffer
+    final textureParamsData = Int32List(1);
+    textureParamsData[0] = heightmapTexture.width;
+
+    final textureParamsBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
+      ByteData.sublistView(textureParamsData),
+    )!;
+
+    // Create full-screen quad vertices
     final vertices = Float32List.fromList([
       -1.0, -1.0, // Bottom left
       1.0, -1.0, // Bottom right
@@ -145,15 +95,18 @@ class RaymarchedTerrainPainter extends CustomPainter {
       ByteData.sublistView(vertices),
     )!;
 
-    // Get shaders and create pipeline
+    // Set up shaders and pipeline
     final vert = shaderLibrary['RaymarchVertex']!;
     final frag = shaderLibrary['RaymarchFragment']!;
     final pipeline = gpu.gpuContext.createRenderPipeline(vert, frag);
 
-    // Set up render pass
-    final (commandBuffer, renderPass) = _setupRenderPass(renderTarget);
+    // Create and set up render pass
+    final commandBuffer = gpu.gpuContext.createCommandBuffer();
+    final renderPass = commandBuffer.createRenderPass(renderTarget);
+    renderPass.setDepthWriteEnable(true);
+    renderPass.setDepthCompareOperation(gpu.CompareFunction.less);
 
-    // Bind pipeline and buffers
+    // Bind pipeline and vertex buffer
     renderPass.bindPipeline(pipeline);
     renderPass.bindVertexBuffer(
       gpu.BufferView(
@@ -164,10 +117,9 @@ class RaymarchedTerrainPainter extends CustomPainter {
       vertices.length ~/ 2,
     );
 
-    // Bind vertex shader uniforms
-    final vertTransformsSlot = vert.getUniformSlot('Transforms');
+    // Bind uniforms
     renderPass.bindUniform(
-      vertTransformsSlot,
+      vert.getUniformSlot('Transforms'),
       gpu.BufferView(
         uniformBuffer,
         offsetInBytes: 0,
@@ -175,17 +127,13 @@ class RaymarchedTerrainPainter extends CustomPainter {
       ),
     );
 
-    // Bind fragment shader texture
-    final heightmapSlot = frag.getUniformSlot('heightmapTexture');
     renderPass.bindTexture(
-      heightmapSlot,
+      frag.getUniformSlot('heightmapTexture'),
       heightmapTexture,
     );
 
-    // Bind texture params uniform
-    final textureParamsSlot = frag.getUniformSlot('TextureParams');
     renderPass.bindUniform(
-      textureParamsSlot,
+      frag.getUniformSlot('TextureParams'),
       gpu.BufferView(
         textureParamsBuffer,
         offsetInBytes: 0,
@@ -196,10 +144,9 @@ class RaymarchedTerrainPainter extends CustomPainter {
     // Draw full-screen quad
     renderPass.setPrimitiveType(gpu.PrimitiveType.triangleStrip);
     renderPass.draw();
-
     commandBuffer.submit();
 
-    // Draw the result to the canvas
+    // Draw result to canvas
     final image = texture.asImage();
     canvas.drawImage(image, Offset.zero, Paint());
   }
