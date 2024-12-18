@@ -1,19 +1,20 @@
 import 'dart:typed_data';
 import 'dart:ui' as ui;
-
 import 'package:vector_math/vector_math.dart';
 
 class TerrainMesh {
   final Float32List vertices;
-  final Uint16List indices;
-  final Uint16List lineIndices;
+  final Uint32List indices;
+  final Uint32List lineIndices;
   final int gridSize;
+  final Duration generationTime;
 
   TerrainMesh({
     required this.vertices,
     required this.indices,
     required this.lineIndices,
     required this.gridSize,
+    required this.generationTime,
   });
 
   static Future<TerrainMesh> create({
@@ -23,8 +24,16 @@ class TerrainMesh {
     double depth = 10.0,
     int resolution = 100,
   }) async {
+    final stopwatch = Stopwatch()..start();
+    print('Creating terrain mesh with resolution: $resolution');
+
     // Get heightmap data
-    final bytes = await heightmap.toByteData();
+    ByteData? bytes;
+    try {
+      bytes = await heightmap.toByteData();
+    } catch (e) {
+      throw Exception('Failed to get heightmap byte data: $e');
+    }
     if (bytes == null) throw Exception('Failed to get heightmap data');
 
     final gridX = resolution;
@@ -51,19 +60,19 @@ class TerrainMesh {
         final normal = _calculateNormal(x, z, gridX, gridZ, vertices, width, height, depth);
 
         // Store vertex data
-        vertices[vIndex++] = xPos; // position.x
-        vertices[vIndex++] = yPos; // position.y
-        vertices[vIndex++] = zPos; // position.z
-        vertices[vIndex++] = normal.x; // normal.x
-        vertices[vIndex++] = normal.y; // normal.y
-        vertices[vIndex++] = normal.z; // normal.z
-        vertices[vIndex++] = x / (gridX - 1); // u
-        vertices[vIndex++] = z / (gridZ - 1); // v
+        vertices[vIndex++] = xPos;
+        vertices[vIndex++] = yPos;
+        vertices[vIndex++] = zPos;
+        vertices[vIndex++] = normal.x;
+        vertices[vIndex++] = normal.y;
+        vertices[vIndex++] = normal.z;
+        vertices[vIndex++] = x / (gridX - 1);
+        vertices[vIndex++] = z / (gridZ - 1);
       }
     }
 
     // Create triangle indices
-    final indices = Uint16List((gridX - 1) * (gridZ - 1) * 6);
+    final indices = Uint32List((gridX - 1) * (gridZ - 1) * 6);
     int iIndex = 0;
 
     for (int z = 0; z < gridZ - 1; z++) {
@@ -86,7 +95,7 @@ class TerrainMesh {
     }
 
     // Create line indices for wireframe
-    final lineIndices = Uint16List((gridX - 1) * gridZ * 2 + gridX * (gridZ - 1) * 2);
+    final lineIndices = Uint32List((gridX - 1) * gridZ * 2 + gridX * (gridZ - 1) * 2);
     int lIndex = 0;
 
     // Horizontal lines
@@ -109,11 +118,19 @@ class TerrainMesh {
       }
     }
 
+    stopwatch.stop();
+    final generationTime = stopwatch.elapsed;
+    print('Mesh generation completed in ${generationTime.inMilliseconds}ms');
+    print('  Vertices: ${vertices.length ~/ 8}');
+    print('  Triangles: ${indices.length ~/ 3}');
+    print('  Lines: ${lineIndices.length ~/ 2}');
+
     return TerrainMesh(
       vertices: vertices,
       indices: indices,
       lineIndices: lineIndices,
       gridSize: resolution,
+      generationTime: generationTime,
     );
   }
 

@@ -26,7 +26,7 @@ class TerrainSettings extends _$TerrainSettings {
 
   void setGridResolution(int resolution) {
     // Clamp between 10 (coarse) and 500 (very detailed) vertices per axis
-    state = state.copyWith(gridResolution: resolution.clamp(10, 500));
+    state = state.copyWith(gridResolution: resolution.clamp(10, 2048));
   }
 
   void setDimensions({double? width, double? height, double? depth}) {

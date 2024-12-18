@@ -121,7 +121,7 @@ class TerrainPainter extends CustomPainter {
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
       size.height.toInt(),
-      format: gpu.PixelFormat.r32g32b32a32Float,
+      format: gpu.PixelFormat.r16g16b16a16Float,
     )!;
 
     // Create a depth texture for depth testing
@@ -218,7 +218,7 @@ class TerrainPainter extends CustomPainter {
               offsetInBytes: 0,
               lengthInBytes: lineIndexBuffer.sizeInBytes,
             ),
-            gpu.IndexType.int16,
+            gpu.IndexType.int32,
             terrainMesh.lineIndices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.line);
@@ -298,7 +298,7 @@ class TerrainPainter extends CustomPainter {
               offsetInBytes: 0,
               lengthInBytes: indexBuffer.sizeInBytes,
             ),
-            gpu.IndexType.int16,
+            gpu.IndexType.int32,
             terrainMesh.indices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.triangle);
@@ -350,7 +350,7 @@ class TerrainPainter extends CustomPainter {
               offsetInBytes: 0,
               lengthInBytes: lineIndexBuffer.sizeInBytes,
             ),
-            gpu.IndexType.int16,
+            gpu.IndexType.int32,
             terrainMesh.lineIndices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.line);
@@ -430,7 +430,7 @@ class TerrainPainter extends CustomPainter {
               offsetInBytes: 0,
               lengthInBytes: indexBuffer.sizeInBytes,
             ),
-            gpu.IndexType.int16,
+            gpu.IndexType.int32,
             terrainMesh.indices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.triangle);
@@ -482,7 +482,7 @@ class TerrainPainter extends CustomPainter {
               offsetInBytes: 0,
               lengthInBytes: lineIndexBuffer.sizeInBytes,
             ),
-            gpu.IndexType.int16,
+            gpu.IndexType.int32,
             terrainMesh.lineIndices.length,
           );
           renderPass.setPrimitiveType(gpu.PrimitiveType.line);

@@ -22,7 +22,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
       gpu.StorageMode.devicePrivate,
       size.width.toInt(),
       size.height.toInt(),
-      format: gpu.PixelFormat.r32g32b32a32Float,
+      format: gpu.PixelFormat.r16g16b16a16Float,
     )!;
 
     final depthTexture = gpu.gpuContext.createTexture(

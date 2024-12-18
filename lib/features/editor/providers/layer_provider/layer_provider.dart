@@ -28,7 +28,7 @@ class LayerController extends _$LayerController {
       gpu.StorageMode.devicePrivate,
       globalSettings.resolution.width.toInt(),
       globalSettings.resolution.height.toInt(),
-      format: gpu.PixelFormat.r32g32b32a32Float,
+      format: gpu.PixelFormat.r16g16b16a16Float,
     )!;
 
     final noiseParams = _previousParams ?? LayerNoiseParams();
