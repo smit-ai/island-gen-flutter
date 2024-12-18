@@ -259,8 +259,8 @@ class _$LayerNoiseParamsImpl implements _LayerNoiseParams {
   const _$LayerNoiseParamsImpl(
       {this.type = LayerNoiseType.perlin,
       this.scale = 1.0,
-      this.frequency = 5.0,
-      this.octaves = 4,
+      this.frequency = 8.0,
+      this.octaves = 7,
       this.persistence = 0.5,
       this.lacunarity = 2.0,
       this.offsetX = 0.0,
