@@ -29,7 +29,7 @@ class LayerController extends _$LayerController {
       globalSettings.resolution.width.toInt(),
       globalSettings.resolution.height.toInt(),
       format: gpu.PixelFormat.r16g16b16a16Float,
-    )!;
+    );
 
     final noiseParams = _previousParams ?? LayerNoiseParams();
     final noiseGenId = HeightmapGenerator.noise(texture, noiseParams);

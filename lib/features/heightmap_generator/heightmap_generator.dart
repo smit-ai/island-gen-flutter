@@ -1,8 +1,10 @@
 import 'dart:typed_data';
+
 import 'package:flutter_gpu/gpu.dart' as gpu;
-import 'package:island_gen_flutter/models/layer.dart';
 import 'package:uuid/uuid.dart';
 import 'package:vector_math/vector_math.dart';
+
+import 'package:island_gen_flutter/models/layer.dart';
 import 'package:island_gen_flutter/shaders.dart';
 
 class HeightmapGenerator {
@@ -26,11 +28,11 @@ class HeightmapGenerator {
 
     final vertexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(vertices),
-    )!;
+    );
 
     final indexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(indices),
-    )!;
+    );
 
     // Create uniform buffer for noise parameters
     final uniformData = Float32List(11);
@@ -48,7 +50,7 @@ class HeightmapGenerator {
 
     final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),
-    )!;
+    );
 
     // Set up render target
     final renderTarget = gpu.RenderTarget.singleColor(
@@ -127,11 +129,11 @@ class HeightmapGenerator {
 
     final vertexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(vertices),
-    )!;
+    );
 
     final indexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(indices),
-    )!;
+    );
 
     // Get shaders for blending
     final vert = shaderLibrary['NoiseVertex']!;
@@ -153,7 +155,7 @@ class HeightmapGenerator {
 
       final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
         ByteData.sublistView(uniformData),
-      )!;
+      );
 
       // Set up render target for the blend operation
       final renderTarget = gpu.RenderTarget.singleColor(

@@ -20,7 +20,7 @@ extension TextureExtensions on gpu.Texture {
     );
 
     // Overwrite the texture with the image's pixel data
-    texture!.overwrite(byteData);
+    texture.overwrite(byteData);
 
     return texture;
   }

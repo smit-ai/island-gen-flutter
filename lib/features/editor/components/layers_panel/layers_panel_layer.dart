@@ -21,7 +21,7 @@ class LayersPanelLayer extends ConsumerWidget {
     return Padding(
       padding: const EdgeInsets.symmetric(vertical: 3),
       child: Material(
-        color: isSelected ? Colors.blue.withOpacity(0.1) : Colors.transparent,
+        color: isSelected ? Colors.blue.withAlpha(25) : Colors.transparent,
         child: InkWell(
           onTap: () => ref.read(globalStateProvider.notifier).selectLayer(layerId),
           child: Container(
@@ -32,7 +32,7 @@ class LayersPanelLayer extends ConsumerWidget {
                 // Visibility toggle
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha(25),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: _SmallIconButton(
@@ -45,7 +45,7 @@ class LayersPanelLayer extends ConsumerWidget {
                 // Isolate button
                 Container(
                   decoration: BoxDecoration(
-                    color: Colors.black.withOpacity(0.1),
+                    color: Colors.black.withAlpha(25),
                     borderRadius: BorderRadius.circular(4),
                   ),
                   child: _SmallIconButton(

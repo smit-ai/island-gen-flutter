@@ -22,15 +22,15 @@ class TerrainPainter extends CustomPainter {
   (gpu.DeviceBuffer, gpu.DeviceBuffer, gpu.DeviceBuffer) _createBuffers() {
     final verticesBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(terrainMesh.vertices),
-    )!;
+    );
 
     final indexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(terrainMesh.indices),
-    )!;
+    );
 
     final lineIndexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(terrainMesh.lineIndices),
-    )!;
+    );
 
     return (verticesBuffer, indexBuffer, lineIndexBuffer);
   }
@@ -102,7 +102,7 @@ class TerrainPainter extends CustomPainter {
 
     return gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(uniformData),
-    )!;
+    );
   }
 
   // Set up render pass with common settings
@@ -122,7 +122,7 @@ class TerrainPainter extends CustomPainter {
       size.width.toInt(),
       size.height.toInt(),
       format: gpu.PixelFormat.r16g16b16a16Float,
-    )!;
+    );
 
     // Create a depth texture for depth testing
     final depthTexture = gpu.gpuContext.createTexture(
@@ -131,10 +131,6 @@ class TerrainPainter extends CustomPainter {
       size.height.toInt(),
       format: gpu.gpuContext.defaultDepthStencilFormat,
     );
-
-    if (depthTexture == null) {
-      throw Exception('Failed to create depth texture');
-    }
 
     // Set up the render target
     final renderTarget = gpu.RenderTarget.singleColor(

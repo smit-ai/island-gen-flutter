@@ -1,13 +1,14 @@
 import 'dart:typed_data';
 
 import 'package:flutter_gpu/gpu.dart' as gpu;
+import 'package:riverpod_annotation/riverpod_annotation.dart';
+import 'package:vector_math/vector_math.dart';
+
 import 'package:island_gen_flutter/features/editor/global_state/global_state_provider.dart';
 import 'package:island_gen_flutter/features/editor/providers/global_settings_provider/global_settings_state_provider.dart';
 import 'package:island_gen_flutter/features/heightmap_generator/heightmap_generator.dart';
 import 'package:island_gen_flutter/models/layer.dart';
 import 'package:island_gen_flutter/shaders.dart';
-import 'package:riverpod_annotation/riverpod_annotation.dart';
-import 'package:vector_math/vector_math.dart';
 
 part 'package:island_gen_flutter/generated/features/editor/providers/heightmap_provider/heightmap_provider.g.dart';
 
@@ -44,7 +45,7 @@ class HeightmapData extends _$HeightmapData {
       globalSettings.resolution.width.toInt(),
       globalSettings.resolution.height.toInt(),
       format: gpu.PixelFormat.r16g16b16a16Float,
-    )!;
+    );
     return texture;
   }
 
@@ -73,11 +74,11 @@ class HeightmapData extends _$HeightmapData {
 
     final vertexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(vertices),
-    )!;
+    );
 
     final indexBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(indices),
-    )!;
+    );
 
     // Get shaders for blending
     final vert = shaderLibrary['NoiseVertex']!;
@@ -95,7 +96,7 @@ class HeightmapData extends _$HeightmapData {
         layers.first.texture.width,
         layers.first.texture.height,
         format: gpu.PixelFormat.r16g16b16a16Float,
-      )!;
+      );
       HeightmapGenerator.noise(currentTexture, LayerNoiseParams(frequency: 0.01));
     }
 
@@ -111,7 +112,7 @@ class HeightmapData extends _$HeightmapData {
 
       final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
         ByteData.sublistView(uniformData),
-      )!;
+      );
 
       // Set up render target for the blend operation
       final renderTarget = gpu.RenderTarget.singleColor(

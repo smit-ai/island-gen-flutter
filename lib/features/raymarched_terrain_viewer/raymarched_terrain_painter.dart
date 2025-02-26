@@ -23,7 +23,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
       size.width.toInt(),
       size.height.toInt(),
       format: gpu.PixelFormat.r16g16b16a16Float,
-    )!;
+    );
 
     final depthTexture = gpu.gpuContext.createTexture(
       gpu.StorageMode.devicePrivate,
@@ -31,10 +31,6 @@ class RaymarchedTerrainPainter extends CustomPainter {
       size.height.toInt(),
       format: gpu.gpuContext.defaultDepthStencilFormat,
     );
-
-    if (depthTexture == null) {
-      throw Exception('Failed to create depth texture');
-    }
 
     // Set up render target
     final renderTarget = gpu.RenderTarget.singleColor(
@@ -73,7 +69,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
 
     final uniformBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(transformData),
-    )!;
+    );
 
     // Create texture params buffer
     final textureParamsData = Int32List(1);
@@ -81,7 +77,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
 
     final textureParamsBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(textureParamsData),
-    )!;
+    );
 
     // Create full-screen quad vertices
     final vertices = Float32List.fromList([
@@ -93,7 +89,7 @@ class RaymarchedTerrainPainter extends CustomPainter {
 
     final verticesBuffer = gpu.gpuContext.createDeviceBufferWithCopy(
       ByteData.sublistView(vertices),
-    )!;
+    );
 
     // Set up shaders and pipeline
     final vert = shaderLibrary['RaymarchVertex']!;
